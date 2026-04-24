@@ -61,7 +61,7 @@ export default function LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchMissedOpportunities = async () => {
+    const fetchMissedOpportunities = async () => {
     try {
       // Fetch real completed signals from SignalHistory
       const response = await fetch('/api/signal-performance/recent');

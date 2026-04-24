@@ -20,6 +20,7 @@ import AlphaPicks from './pages/AlphaPicks'
 import Layout from './components/Layout'
 import './i18n'
 
+// Build v5 - API Proxy
 function App() {
   const { token } = useAuthStore()
 

@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useAuthStore } from '../store/authStore'
 
 const api = axios.create({
-  baseURL: 'https://neon-alpha1-production.up.railway.app/api',
+  baseURL: '/api',
 })
 
 api.interceptors.request.use((config) => {
