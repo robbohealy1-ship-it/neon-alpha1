@@ -32,6 +32,15 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Root health check for Railway
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'neon-alpha-terminal-api' });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
