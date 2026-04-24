@@ -39,6 +39,7 @@ interface GemAnalysis {
   target1: number;
   target2: number;
   target3: number;
+  hype?: string;
 }
 
 // Low-cap gem categories with hype potential
