@@ -27,7 +27,7 @@ dotenv.config();
 
 const app = express();
 
-// CORS middleware - MUST be before routes - Updated for Vercel
+// CORS middleware - MUST be before all routes
 app.use(cors({
   origin: [process.env.FRONTEND_URL || 'http://localhost:5173', 'https://neon-alpha2.vercel.app'],
   credentials: true,
