@@ -44,7 +44,10 @@ app.get('/health', (req, res) => {
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json({
   verify: (req: any, res, buf) => {
     // Store raw body for Stripe webhook verification
