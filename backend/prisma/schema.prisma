@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  password       String
+  name           String?
+  subscriptionTier   String   @default("basic")
+  subscriptionStatus String   @default("active")
+  subscriptionExpiry DateTime?
+  signalsViewedToday Int      @default(0)
+  alphaPicksViewedToday Int   @default(0)
+  lastSignalReset    DateTime @default(now())
+  lastAlphaPickReset DateTime @default(now())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  lastLogin      DateTime?
+  alerts         Alert[]
+  trades         Trade[]
+  watchlistItems WatchlistItem[]
+  userLogs       UserLog[]
+  alphaPickBookmarks AlphaPickBookmark[]
+
+  @@index([subscriptionTier])
+  @@index([subscriptionStatus])
+}
+
+model Trade {
+  id         String    @id @default(uuid())
+  userId     String
+  asset      String
+  direction  String
+  entry      Float
+  exit       Float?
+  size       Float
+  pnl        Float?
+  pnlPercent Float?
+  status     String    @default("open")
+  notes      String?
+  entryDate  DateTime  @default(now())
+  exitDate   DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model WatchlistItem {
+  id        String   @id @default(uuid())
+  userId    String
+  symbol    String
+  sentiment String   @default("neutral")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, symbol])
+  @@index([userId])
+}
+
+model Alert {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  asset     String
+  message   String
+  severity  String   @default("info")
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model UserLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  feature   String?
+  ipAddress String?
+  userAgent String?
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model SubscriptionPlan {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  price     Float
+  features  String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SignalHistory {
+  id         String    @id @default(uuid())
+  coin       String
+  direction  String
+  entry      Float
+  stopLoss   Float
+  takeProfit Float
+  result     String    @default("ACTIVE")
+  confidence Int
+  createdAt  DateTime  @default(now())
+  closedAt   DateTime?
+  pnlPercent Float?
+  strategy   String?
+  timeframe  String?
+
+  @@index([result])
+  @@index([createdAt])
+  @@index([coin])
+}
+
+model Signal {
+  id            String    @id @default(uuid())
+  coin          String
+  symbol        String
+  direction     String
+  entryMin      Float
+  entryMax      Float
+  stopLoss      Float
+  target1       Float
+  target2       Float?
+  target3       Float?
+  confidence    Int
+  setupType     String
+  timeframe     String
+  strategy      String
+  strategyType  String    @default("liquidity") // liquidity | breakout | trend | mean_reversion
+  status        String    @default("FORMING")
+  parentSetupId String?   // Links to parent TradeSetup
+  parentSetup   TradeSetup? @relation("SignalToSetup", fields: [parentSetupId], references: [id])
+  ema50         Float?
+  ema200        Float?
+  rsi           Float?
+  volume        Float?
+  volumeAvg     Float?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  triggeredAt   DateTime?
+  expiresAt     DateTime
+  entryPrice    Float?
+  exitPrice     Float?
+  pnlPercent    Float?
+
+  @@index([status])
+  @@index([coin])
+  @@index([createdAt])
+  @@index([expiresAt])
+  @@index([setupType])
+  @@index([parentSetupId])
+}
+
+model SignalView {
+  id            String   @id @default(uuid())
+  userId        String
+  date          String
+  signalsViewed Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+}
+
+model TradeSetup {
+  id           String    @id @default(uuid())
+  asset        String
+  direction    String
+  confidence   Int
+  riskLevel    String
+  entryZone    String
+  stopLoss     Float?
+  targets      String?   // JSON array of targets
+  reasoning    String
+  strategyType String    @default("liquidity") // liquidity | breakout | trend | mean_reversion
+  timeframe    String    @default("4H") // 1H | 4H | Daily
+  status       String    @default("forming") // forming | near_trigger
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime?
+  signals      Signal[]  @relation("SignalToSetup")
+
+  @@index([active])
+  @@index([status])
+  @@index([strategyType])
+  @@index([timeframe])
+}
+
+model AlphaPick {
+  id                String   @id @default(uuid())
+  coinName          String
+  ticker            String
+  sector            String   // AI, DeFi, L2, Meme, RWA, etc.
+  marketCapCategory String   // LOW, MID, HIGH
+  
+  // Executive Summary
+  executiveSummary  String   // JSON array of bullet points
+  
+  // Investment Thesis
+  thesis            String   @db.Text
+  
+  // Market Narrative
+  narrative         String   @db.Text
+  
+  // Fundamentals (JSON)
+  useCase           String   @db.Text
+  tokenomics        String   // JSON: supply, inflation, unlocks
+  teamInvestors     String   // JSON: key people, backers
+  competitiveEdge   String   @db.Text
+  
+  // On-Chain Data (JSON)
+  onChainData       String   // JSON: wallet growth, exchange flows, whale activity, volume
+  
+  // Technicals (JSON)
+  marketStructure   String   // bullish/bearish/neutral
+  accumulationZones String // JSON array of price levels
+  liquidityAreas    String   // JSON: sweeps, demand zones
+  
+  // Execution Plan
+  executionPlan     String   @db.Text
+  invalidation    Float    // Price level that invalidates thesis
+  timeHorizon     String   // SWING, POSITION, LONG_TERM
+  
+  // Targets
+  target1         Float
+  target2         Float
+  target3         Float
+  
+  // Catalysts & Risks
+  catalysts         String   // JSON array
+  risks             String   // JSON array of risk scenarios
+  
+  // Metadata
+  confidenceScore   Int      // 0-100
+  status            String   @default("ACCUMULATING") // ACCUMULATING, WATCHING, COMPLETED
+  featuredImage     String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  expiresAt         DateTime?
+  
+  // Relations
+  bookmarks         AlphaPickBookmark[]
+  performance       AlphaPickPerformance?
+  
+  @@index([sector])
+  @@index([marketCapCategory])
+  @@index([status])
+  @@index([confidenceScore])
+  @@index([createdAt])
+}
+
+model AlphaPickBookmark {
+  id          String   @id @default(uuid())
+  userId      String
+  pickId      String
+  notes       String?
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pick        AlphaPick @relation(fields: [pickId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, pickId])
+  @@index([userId])
+}
+
+model AlphaPickPerformance {
+  id          String   @id @default(uuid())
+  pickId      String   @unique
+  entryPrice  Float?
+  currentPrice Float?
+  performancePercent Float?
+  hitTarget1  Boolean  @default(false)
+  hitTarget2  Boolean  @default(false)
+  hitTarget3  Boolean  @default(false)
+  invalidated Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+  
+  pick        AlphaPick @relation(fields: [pickId], references: [id], onDelete: Cascade)
+}

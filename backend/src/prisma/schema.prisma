@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "./database.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  password  String?
+  tier      String   @default("free")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trades    Trade[]
+}
+
+model Trade {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset       String
+  direction   String
+  entry       Float
+  exit        Float?
+  size        Float
+  status      String
+  notes       String?
+  pnl         Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Signal {
+  id          String   @id @default(uuid())
+  coin        String
+  timeframe   String
+  direction   String
+  entry       Float
+  stopLoss    Float
+  takeProfit1 Float
+  takeProfit2 Float?
+  takeProfit3 Float?
+  strategy    String
+  confidence  Int
+  riskReward  Float
+  status      String   @default("active")
+  result      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SignalPerformance {
+  id              String   @id @default(uuid())
+  totalSignals    Int      @default(0)
+  winningSignals  Int      @default(0)
+  losingSignals   Int      @default(0)
+  winRate         Float
+  avgRiskReward   Float
+  lastUpdated     DateTime @updatedAt
+}
