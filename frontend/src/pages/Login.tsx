@@ -34,7 +34,11 @@ export default function Login() {
       setAuth(data.token, data.user, rememberMe)
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed')
+      const errorMessage = typeof err.response?.data?.error === 'string' 
+        ? err.response?.data?.error 
+        : err.response?.data?.message 
+        || 'Login failed. Please check your credentials.'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
