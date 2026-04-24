@@ -3,10 +3,12 @@ import { PrismaClient } from '@prisma/client';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
 import { 
   requireTier,
-  requireUsageLimit 
+  requireUsageLimit,
+  PermissionRequest
 } from '../middleware/permissions';
 import { alphaPicksService } from '../services/alphaPicksService';
 import { lowCapGemScanner } from '../services/lowCapGemScanner';
+import { marketDataService } from '../services/marketDataService';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -77,8 +79,8 @@ router.get('/',
   authenticateToken, 
   requireTier('pro'),
   requireUsageLimit('alphaPicks'),
-  async (req: AuthRequest, res) => {
-    console.log('[DEBUG /alpha-picks] Route reached, userId:', req.userId, 'userSubscription:', req.userSubscription);
+  async (req: PermissionRequest, res) => {
+    console.log('[DEBUG /alpha-picks] Route reached, userId:', req.userId, 'userSubscription:', (req as any).userSubscription);
     try {
       const { sector, category, status, minConfidence } = req.query;
       

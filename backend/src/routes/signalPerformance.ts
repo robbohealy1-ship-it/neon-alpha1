@@ -20,7 +20,7 @@ router.get('/metrics', async (req, res) => {
 router.get('/recent', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit as string) || 20;
-    let signals = await signalTrackerService.getRecentSignals(limit);
+    let signals: any[] = await signalTrackerService.getRecentSignals(limit);
     
     // Check if we have any completed winning signals
     const hasWinningSignal = signals.some((s: any) => s.result === 'WIN' && s.pnlPercent > 0);

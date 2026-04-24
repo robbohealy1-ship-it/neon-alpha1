@@ -195,7 +195,7 @@ class MarketDataService {
         throw new Error(`CoinGecko API error: ${response.statusText}`);
       }
 
-      return await response.json();
+      return await response.json() as any[];
     } catch (error) {
       console.error('Error fetching top coins:', error);
       return [];
@@ -213,7 +213,7 @@ class MarketDataService {
         throw new Error(`CoinGecko API error: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as any;
       return data.coins || [];
     } catch (error) {
       console.error('Error fetching trending coins:', error);
@@ -234,7 +234,7 @@ class MarketDataService {
         throw new Error(`CoinGecko API error: ${response.statusText}`);
       }
 
-      return await response.json();
+      return await response.json() as any;
     } catch (error) {
       console.error(`Error fetching details for ${coinId}:`, error);
       return null;

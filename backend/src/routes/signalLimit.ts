@@ -15,7 +15,7 @@ router.get('/status', authenticateToken, async (req: any, res) => {
 
     // Check if user has active subscription
     const subscriptionStatus = subscriptionService.getSubscriptionStatus(userId);
-    const isPaidUser = subscriptionStatus.isActive && (subscriptionStatus.plan === 'basic' || subscriptionStatus.plan === 'pro');
+    const isPaidUser = subscriptionStatus.isActive && (subscriptionStatus.plan === 'starter' || subscriptionStatus.plan === 'pro' || subscriptionStatus.plan === 'lifetime');
 
     const status = await signalLimitService.getTodayStatus(userId, isPaidUser);
     
@@ -43,7 +43,7 @@ router.post('/view', authenticateToken, async (req: any, res) => {
 
     // Check if user has active subscription
     const subscriptionStatus = subscriptionService.getSubscriptionStatus(userId);
-    const isPaidUser = subscriptionStatus.isActive && (subscriptionStatus.plan === 'basic' || subscriptionStatus.plan === 'pro');
+    const isPaidUser = subscriptionStatus.isActive && (subscriptionStatus.plan === 'starter' || subscriptionStatus.plan === 'pro' || subscriptionStatus.plan === 'lifetime');
 
     // First check if allowed
     const checkResult = await signalLimitService.checkSignalLimit(userId, isPaidUser);
