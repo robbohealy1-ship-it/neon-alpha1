@@ -27,6 +27,14 @@ dotenv.config();
 
 const app = express();
 
+// CORS middleware - MUST be before routes - Updated for Vercel
+app.use(cors({
+  origin: [process.env.FRONTEND_URL || 'http://localhost:5173', 'https://neon-alpha2.vercel.app'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -43,11 +51,6 @@ app.get('/health', (req, res) => {
 
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
-
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  credentials: true
-}));
 app.use(express.json({
   verify: (req: any, res, buf) => {
     // Store raw body for Stripe webhook verification
