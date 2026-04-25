@@ -9,6 +9,12 @@ import api from '../lib/api'
 import { useAuthStore } from '../store/authStore'
 import { useMobile } from '../hooks/useMobile'
 
+// Helper to get coin icon URL from symbol
+const getCoinIconUrl = (coin: string) => {
+  const symbol = coin.toLowerCase().replace('usdt', '').replace('usd', '')
+  return `https://assets.coincap.io/assets/icons/${symbol}@2x.png`
+}
+
 interface Setup {
   id: string
   coin: string
@@ -294,11 +300,19 @@ export default function TradeSetups() {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-dark-600 to-dark-700 flex items-center justify-center border border-dark-600 overflow-hidden">
                   <img 
-                    src={`https://assets.coingecko.com/coins/images/1/small/${selectedSetup.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
+                    src={getCoinIconUrl(selectedSetup.coin)}
                     alt={selectedSetup.coin}
                     className="w-6 h-6 object-contain"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none'
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                      const parent = target.parentElement
+                      if (parent) {
+                        const fallback = document.createElement('div')
+                        fallback.className = 'w-6 h-6 rounded-full bg-dark-600 flex items-center justify-center text-[10px] font-bold text-gray-400'
+                        fallback.textContent = selectedSetup.coin.replace('USDT', '').replace('USD', '').slice(0, 2)
+                        parent.appendChild(fallback)
+                      }
                     }}
                   />
                 </div>

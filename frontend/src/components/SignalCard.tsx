@@ -3,6 +3,12 @@ import { motion } from 'framer-motion'
 import { Clock, Zap, Copy, ExternalLink, Target, BarChart3, Percent } from 'lucide-react'
 import MiniTradingViewChart from './MiniTradingViewChart'
 
+// Helper to get coin icon URL from symbol
+const getCoinIconUrl = (coin: string) => {
+  const symbol = coin.toLowerCase().replace('usdt', '').replace('usd', '')
+  return `https://assets.coincap.io/assets/icons/${symbol}@2x.png`
+}
+
 interface Signal {
   id: string
   coin: string
@@ -232,19 +238,20 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
               : 'bg-gradient-to-br from-trading-loss/30 to-trading-loss/10 shadow-trading-loss/10'
           }`}>
             <img 
-              src={`https://assets.coingecko.com/coins/images/1/small/${signal.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
+              src={getCoinIconUrl(signal.coin)}
               alt={signal.coin}
               className="w-9 h-9 object-contain drop-shadow-md"
               onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const parent = target.parentElement;
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+                const parent = target.parentElement
                 if (parent) {
-                  const fallback = document.createElement('div');
-                  fallback.innerHTML = signal.direction === 'LONG' 
-                    ? '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>'
-                    : '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>';
-                  parent.appendChild(fallback.firstChild!);
+                  const fallback = document.createElement('div')
+                  fallback.className = `w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold ${
+                    signal.direction === 'LONG' ? 'text-trading-profit' : 'text-trading-loss'
+                  }`
+                  fallback.textContent = signal.coin.replace('USDT', '').replace('USD', '').slice(0, 2)
+                  parent.appendChild(fallback)
                 }
               }}
             />

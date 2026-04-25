@@ -1,6 +1,12 @@
 import { motion } from 'framer-motion'
 import { TrendingUp, TrendingDown, Clock } from 'lucide-react'
 
+// Helper to get coin icon URL from symbol
+const getCoinIconUrl = (coin: string) => {
+  const symbol = coin.toLowerCase().replace('usdt', '').replace('usd', '')
+  return `https://assets.coincap.io/assets/icons/${symbol}@2x.png`
+}
+
 interface Setup {
   id: string
   symbol: string
@@ -91,11 +97,20 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
           {/* Crypto Icon */}
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-dark-600 to-dark-700 flex items-center justify-center border border-gray-700 overflow-hidden">
             <img 
-              src={`https://assets.coingecko.com/coins/images/1/small/${setup.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
+              src={getCoinIconUrl(setup.coin)}
               alt={setup.coin}
               className="w-6 h-6 object-contain"
               onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none'
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+                // Show fallback icon
+                const parent = target.parentElement
+                if (parent) {
+                  const fallback = document.createElement('div')
+                  fallback.className = 'w-6 h-6 rounded-full bg-dark-600 flex items-center justify-center text-[10px] font-bold text-gray-400'
+                  fallback.textContent = setup.coin.replace('USDT', '').replace('USD', '').slice(0, 2)
+                  parent.appendChild(fallback)
+                }
               }}
             />
           </div>
