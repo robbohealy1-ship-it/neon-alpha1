@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { TrendingUp, TrendingDown, Zap, Plus, Trophy, Bell, BellOff, History, XCircle, ChevronDown, BarChart3, Clock, Crown, Lock, ExternalLink, Activity } from 'lucide-react'
+import { TrendingUp, TrendingDown, Zap, Plus, Trophy, Bell, BellOff, History, XCircle, ChevronDown, BarChart3, Clock, Crown, Lock, ExternalLink, Activity, X } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import SignalCard from '../components/SignalCard'
 import TradingViewChart from '../components/TradingViewChart'
@@ -688,30 +688,32 @@ function SignalsContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-dark-950/95 flex items-start md:items-center justify-center z-50 p-0 md:p-4"
             onClick={() => setSelectedSignal(null)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="glass rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+              className="bg-dark-900 rounded-none md:rounded-xl w-full md:max-w-4xl h-full md:h-auto md:max-h-[90vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
+              <div className="flex items-center justify-between p-4 md:p-6 border-b border-dark-700/50 bg-dark-900">
                 <div className="flex items-center gap-3">
-                  <img 
-                    src={`https://assets.coingecko.com/coins/images/1/small/${selectedSignal.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
-                    alt={selectedSignal.coin}
-                    className="w-12 h-12 rounded-xl"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none'
-                    }}
-                  />
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-dark-700 to-dark-800 flex items-center justify-center border border-dark-600 overflow-hidden">
+                    <img 
+                      src={`https://assets.coingecko.com/coins/images/1/small/${selectedSignal.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
+                      alt={selectedSignal.coin}
+                      className="w-8 h-8 object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none'
+                      }}
+                    />
+                  </div>
                   <div>
-                    <h2 className="text-2xl font-bold">{selectedSignal.coin.replace('USDT', '')}</h2>
-                    <p className={`text-sm ${selectedSignal.direction === 'LONG' ? 'text-neon-green' : 'text-red-400'}`}>
+                    <h2 className="text-xl md:text-2xl font-bold text-white">{selectedSignal.coin.replace('USDT', '')}</h2>
+                    <p className={`text-sm ${selectedSignal.direction === 'LONG' ? 'text-trading-profit' : 'text-trading-loss'}`}>
                       {selectedSignal.direction} • {selectedSignal.timeframe} • {selectedSignal.setupType}
                     </p>
                   </div>
@@ -720,39 +722,39 @@ function SignalsContent() {
                   onClick={() => setSelectedSignal(null)}
                   className="p-2 hover:bg-dark-700 rounded-lg transition-colors"
                 >
-                  ✕
+                  <X size={24} className="text-gray-400" />
                 </button>
               </div>
               
               {/* Trade Levels Bar */}
-              <div className="px-6 py-3 border-b border-gray-700/50">
-                <div className="flex items-center gap-6 text-sm">
+              <div className="px-4 md:px-6 py-3 border-b border-dark-700/50 bg-dark-850">
+                <div className="flex flex-wrap items-center gap-3 md:gap-6 text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-neon-cyan/30 border border-neon-cyan"></span>
+                    <span className="w-3 h-3 rounded bg-trading-cyan/30 border border-trading-cyan"></span>
                     <span className="text-gray-400">Entry:</span>
-                    <span className="text-neon-cyan font-semibold">
+                    <span className="text-trading-cyan font-semibold">
                       ${((selectedSignal.entryMin + selectedSignal.entryMax) / 2).toFixed(4)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-red-400/30 border border-red-400"></span>
+                    <span className="w-3 h-3 rounded bg-trading-loss/30 border border-trading-loss"></span>
                     <span className="text-gray-400">SL:</span>
-                    <span className="text-red-400 font-semibold">${selectedSignal.stopLoss.toFixed(4)}</span>
+                    <span className="text-trading-loss font-semibold">${selectedSignal.stopLoss.toFixed(4)}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded bg-neon-green/30 border border-neon-green"></span>
+                    <span className="w-3 h-3 rounded bg-trading-profit/30 border border-trading-profit"></span>
                     <span className="text-gray-400">TP:</span>
-                    <span className="text-neon-green font-semibold">${selectedSignal.target1.toFixed(4)}</span>
+                    <span className="text-trading-profit font-semibold">${selectedSignal.target1.toFixed(4)}</span>
                   </div>
-                  <div className="ml-auto flex items-center gap-2">
+                  <div className="flex items-center gap-2 ml-auto">
                     <span className="text-gray-400">Confidence:</span>
-                    <span className="font-bold text-neon-purple">{selectedSignal.confidence}%</span>
+                    <span className="font-bold text-trading-gold">{selectedSignal.confidence}%</span>
                   </div>
                   <a
                     href={`https://www.tradingview.com/chart/?symbol=BINANCE:${selectedSignal.coin}&interval=60`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-1.5 bg-neon-cyan/20 hover:bg-neon-cyan/30 text-neon-cyan text-xs rounded-lg transition-colors flex items-center gap-1"
+                    className="hidden md:flex px-3 py-1.5 bg-trading-cyan/20 hover:bg-trading-cyan/30 text-trading-cyan text-xs rounded-lg transition-colors items-center gap-1"
                   >
                     <ExternalLink size={12} />
                     Open in TradingView
@@ -761,41 +763,45 @@ function SignalsContent() {
               </div>
               
               {/* Content */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                {/* TradingView Chart */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <Activity size={20} className="text-neon-cyan" />
+              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+                {/* TradingView Chart - Full height on mobile */}
+                <div className="h-[50vh] md:h-[400px]">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-white">
+                    <Activity size={20} className="text-trading-cyan" />
                     Price Chart
                   </h3>
-                  <div className="h-[400px]">
-                    <TradingViewChart symbol={selectedSignal.coin.replace('USDT', '').replace('USD', '')} theme="dark" />
+                  <div className="h-[calc(100%-2rem)]">
+                    <TradingViewChart 
+                      symbol={selectedSignal.coin.replace('USDT', '').replace('USD', '')} 
+                      theme="dark" 
+                      timeframe="1H"
+                    />
                   </div>
                 </div>
 
                 {/* Trade Details Grid */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="glass rounded-xl p-4 text-center border border-gray-700/50">
-                    <div className="text-xs text-gray-400 mb-1">Entry Range</div>
-                    <div className="text-lg font-bold text-neon-cyan">
+                <div className="grid grid-cols-3 gap-3 md:gap-4">
+                  <div className="bg-dark-800 rounded-xl p-3 md:p-4 text-center border border-trading-cyan/20">
+                    <div className="text-[10px] md:text-xs text-gray-400 mb-1">Entry Range</div>
+                    <div className="text-sm md:text-lg font-bold text-trading-cyan">
                       ${selectedSignal.entryMin?.toLocaleString()} - ${selectedSignal.entryMax?.toLocaleString()}
                     </div>
                   </div>
-                  <div className="glass rounded-xl p-4 text-center border border-gray-700/50">
-                    <div className="text-xs text-gray-400 mb-1">Stop Loss</div>
-                    <div className="text-lg font-bold text-red-400">${selectedSignal.stopLoss.toLocaleString()}</div>
+                  <div className="bg-dark-800 rounded-xl p-3 md:p-4 text-center border border-trading-loss/20">
+                    <div className="text-[10px] md:text-xs text-gray-400 mb-1">Stop Loss</div>
+                    <div className="text-sm md:text-lg font-bold text-trading-loss">${selectedSignal.stopLoss.toLocaleString()}</div>
                   </div>
-                  <div className="glass rounded-xl p-4 text-center border border-gray-700/50">
-                    <div className="text-xs text-gray-400 mb-1">Take Profit</div>
-                    <div className="text-lg font-bold text-neon-green">${selectedSignal.target1.toLocaleString()}</div>
+                  <div className="bg-dark-800 rounded-xl p-3 md:p-4 text-center border border-trading-profit/20">
+                    <div className="text-[10px] md:text-xs text-gray-400 mb-1">Take Profit</div>
+                    <div className="text-sm md:text-lg font-bold text-trading-profit">${selectedSignal.target1.toLocaleString()}</div>
                   </div>
                 </div>
                 
                 {/* Risk Metrics */}
-                <div className="glass rounded-xl p-4 border border-gray-700/50">
+                <div className="bg-dark-800 rounded-xl p-4 border border-dark-700/50">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm text-gray-400">Risk/Reward Ratio</span>
-                    <span className="font-bold text-neon-purple">
+                    <span className="font-bold text-trading-gold">
                       {(() => {
                         const risk = Math.abs(((selectedSignal.entryMin + selectedSignal.entryMax) / 2) - selectedSignal.stopLoss)
                         const reward = Math.abs(selectedSignal.target1 - ((selectedSignal.entryMin + selectedSignal.entryMax) / 2))
@@ -803,9 +809,9 @@ function SignalsContent() {
                       })()}:1
                     </span>
                   </div>
-                  <div className="w-full bg-dark-600 rounded-full h-2">
+                  <div className="w-full bg-dark-700 rounded-full h-2">
                     <div
-                      className="bg-gradient-to-r from-neon-cyan to-neon-purple h-2 rounded-full"
+                      className="bg-gradient-to-r from-trading-cyan to-trading-gold h-2 rounded-full"
                       style={{ width: `${selectedSignal.confidence}%` }}
                     />
                   </div>
@@ -816,10 +822,10 @@ function SignalsContent() {
                 </div>
                 
                 {/* Strategy Info */}
-                <div className="glass rounded-xl p-4 border border-gray-700/50">
+                <div className="bg-dark-800 rounded-xl p-4 border border-dark-700/50">
                   <div className="flex items-center gap-2 mb-2">
-                    <BarChart3 size={16} className="text-neon-cyan" />
-                    <span className="font-semibold">Strategy: {selectedSignal.setupType}</span>
+                    <BarChart3 size={16} className="text-trading-cyan" />
+                    <span className="font-semibold text-white">Strategy: {selectedSignal.setupType}</span>
                   </div>
                   <p className="text-sm text-gray-400">{selectedSignal.reasoning || selectedSignal.strategy}</p>
                 </div>
@@ -830,7 +836,7 @@ function SignalsContent() {
                     const text = `${selectedSignal.coin.replace('USDT', '')} ${selectedSignal.direction} | Entry: ${((selectedSignal.entryMin + selectedSignal.entryMax) / 2).toFixed(2)} | SL: ${selectedSignal.stopLoss.toFixed(2)} | TP: ${selectedSignal.target1.toFixed(2)}`
                     navigator.clipboard.writeText(text)
                   }}
-                  className="w-full bg-gradient-to-r from-neon-cyan to-neon-purple text-white font-bold py-3 rounded-lg hover:opacity-90 transition-opacity"
+                  className="w-full bg-gradient-to-r from-trading-cyan to-trading-blue text-dark-950 font-bold py-3 rounded-lg hover:opacity-90 transition-opacity"
                 >
                   Copy Trade Text
                 </button>

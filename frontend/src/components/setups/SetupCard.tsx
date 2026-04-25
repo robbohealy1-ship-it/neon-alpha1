@@ -31,17 +31,17 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
   const isLocked = isBasic && index >= 2 // First 2 setups unlocked for BASIC, rest locked
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'TRIGGERED': return 'bg-neon-green/20 text-neon-green border-neon-green/50'
-      case 'NEAR TRIGGER': return 'bg-neon-yellow/20 text-neon-yellow border-neon-yellow/50'
-      case 'FORMING': return 'bg-neon-cyan/20 text-neon-cyan border-neon-cyan/50'
+      case 'TRIGGERED': return 'bg-trading-profit/20 text-trading-profit border-trading-profit/50'
+      case 'NEAR TRIGGER': return 'bg-trading-gold/20 text-trading-gold border-trading-gold/50'
+      case 'FORMING': return 'bg-trading-cyan/20 text-trading-cyan border-trading-cyan/50'
       default: return 'bg-gray-500/20 text-gray-400 border-gray-500/50'
     }
   }
 
   const getBiasIcon = (bias: string) => {
     return bias === 'Bullish' 
-      ? <TrendingUp size={14} className="text-neon-green" />
-      : <TrendingDown size={14} className="text-red-400" />
+      ? <TrendingUp size={14} className="text-trading-profit" />
+      : <TrendingDown size={14} className="text-trading-loss" />
   }
 
   const formatPrice = (price: number) => {
@@ -81,8 +81,8 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
       onClick={onClick}
       className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
         isSelected 
-          ? 'bg-neon-cyan/10 border border-neon-cyan/50 shadow-lg shadow-neon-cyan/10' 
-          : 'bg-dark-700/50 border border-gray-700/50 hover:bg-dark-700 hover:border-gray-600'
+          ? 'bg-trading-cyan/10 border border-trading-cyan/50 shadow-lg shadow-trading-cyan/10' 
+          : 'bg-dark-800/50 border border-dark-700/50 hover:bg-dark-800 hover:border-dark-600'
       }`}
     >
       {/* Header */}
@@ -106,7 +106,7 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
             </div>
             <div className="flex items-center gap-1">
               {getBiasIcon(setup.bias)}
-              <span className={`text-xs font-medium ${setup.bias === 'Bullish' ? 'text-neon-green' : 'text-red-400'}`}>
+              <span className={`text-xs font-medium ${setup.bias === 'Bullish' ? 'text-trading-profit' : 'text-trading-loss'}`}>
                 {setup.bias}
               </span>
             </div>
@@ -117,7 +117,7 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
           <span className={`px-2 py-0.5 rounded text-xs font-semibold border ${getStatusColor(setup.status)}`}>
             {setup.status.replace('_', ' ')}
           </span>
-          <div className="mt-1 text-sm font-bold text-neon-purple">
+          <div className="mt-1 text-sm font-bold text-trading-gold">
             {setup.confidence}%
           </div>
         </div>
@@ -132,19 +132,19 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
       <div className="grid grid-cols-3 gap-2 text-xs mb-3">
         <div>
           <span className="text-gray-500">Entry</span>
-          <div className={`text-neon-cyan font-medium ${isLocked ? 'blur-sm select-none' : ''}`}>
+          <div className={`text-trading-cyan font-medium ${isLocked ? 'blur-sm select-none' : ''}`}>
             {isLocked ? '••••• - •••••' : `${formatPrice(setup.entryZone.low)} - ${formatPrice(setup.entryZone.high)}`}
           </div>
         </div>
         <div>
           <span className="text-gray-500">SL</span>
-          <div className={`text-red-400 font-medium ${isLocked ? 'blur-sm select-none' : ''}`}>
+          <div className={`text-trading-loss font-medium ${isLocked ? 'blur-sm select-none' : ''}`}>
             {isLocked ? '•••••' : formatPrice(setup.stopLoss)}
           </div>
         </div>
         <div>
           <span className="text-gray-500">TP</span>
-          <div className={`text-neon-green font-medium ${isLocked ? 'blur-sm select-none' : ''}`}>
+          <div className={`text-trading-profit font-medium ${isLocked ? 'blur-sm select-none' : ''}`}>
             {isLocked ? '•••••' : formatPrice(setup.targets[0])}
           </div>
         </div>
@@ -152,9 +152,9 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
       
       {/* Upgrade prompt for locked setups */}
       {isLocked && (
-        <div className="mb-3 p-2 rounded-lg bg-gradient-to-r from-neon-purple/20 to-neon-cyan/20 border border-neon-purple/30">
+        <div className="mb-3 p-2 rounded-lg bg-gradient-to-r from-trading-plasma/20 to-trading-cyan/20 border border-trading-plasma/30">
           <p className="text-xs text-center text-gray-300">
-            🔒 <span className="text-neon-cyan font-semibold">Upgrade to PRO</span> to unlock entry prices & targets
+            🔒 <span className="text-trading-cyan font-semibold">Upgrade to PRO</span> to unlock entry prices & targets
           </p>
         </div>
       )}
@@ -163,10 +163,10 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-3">
           <span className="text-gray-500">
-            RR <span className="text-neon-cyan font-semibold">{setup.riskRewardRatio.toFixed(1)}</span>
+            RR <span className="text-trading-cyan font-semibold">{setup.riskRewardRatio.toFixed(1)}</span>
           </span>
           <span className="text-gray-500">
-            Risk <span className={setup.riskPercent < 3 ? 'text-neon-green' : setup.riskPercent < 5 ? 'text-neon-yellow' : 'text-red-400'}>{setup.riskPercent.toFixed(1)}%</span>
+            Risk <span className={setup.riskPercent < 3 ? 'text-trading-profit' : setup.riskPercent < 5 ? 'text-trading-gold' : 'text-trading-loss'}>{setup.riskPercent.toFixed(1)}%</span>
           </span>
         </div>
         <div className="flex items-center gap-1 text-gray-600">
@@ -183,7 +183,7 @@ export default function SetupCard({ setup, isSelected, onClick, index, tier = 'b
           return (
             <div
               key={i}
-              className={`flex-1 rounded-sm ${isGreen ? 'bg-neon-green/30' : 'bg-red-400/30'}`}
+              className={`flex-1 rounded-sm ${isGreen ? 'bg-trading-profit/30' : 'bg-trading-loss/30'}`}
               style={{ height: `${height}%` }}
             />
           )

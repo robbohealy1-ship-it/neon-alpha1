@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { TrendingUp, TrendingDown, Lock, Minus } from 'lucide-react'
+import { TrendingUp, TrendingDown, Lock, Minus, X } from 'lucide-react'
 import SetupList from '../components/setups/SetupList'
 import SetupFilters from '../components/setups/SetupFilters'
 import ChartModal from '../components/chart/ChartModal'
 import api from '../lib/api'
 import { useAuthStore } from '../store/authStore'
+import { useMobile } from '../hooks/useMobile'
 
 interface Setup {
   id: string
@@ -155,6 +156,8 @@ export default function TradeSetups() {
   // Determine if selected setup is locked (index >= 2 for BASIC tier)
   const selectedSetupIndex = selectedId ? setups.findIndex(s => s.id === selectedId) : -1
   const selectedSetupLocked = (user?.tier || tier) === 'basic' && selectedSetupIndex >= 2
+  
+  const { isMobile } = useMobile()
 
   return (
     <div className="flex h-screen bg-dark-800">
@@ -265,8 +268,8 @@ export default function TradeSetups() {
             )}
           </div>
 
-          {/* RIGHT PANEL - 70% for TradingView */}
-          <div className="w-[70%] bg-dark-900/50">
+          {/* RIGHT PANEL - 70% for TradingView - Hidden on mobile */}
+          <div className="hidden md:block w-[70%] bg-dark-900/50">
             <ChartModal 
               setup={selectedSetup} 
               onClose={() => setSelectedId(null)}
@@ -276,6 +279,56 @@ export default function TradeSetups() {
           </div>
         </div>
       </div>
+      
+      {/* Mobile Chart Modal - Full screen overlay */}
+      <AnimatePresence>
+        {isMobile && selectedId && selectedSetup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-dark-950 z-50 md:hidden"
+          >
+            {/* Mobile Modal Header with Coin Logo */}
+            <div className="flex items-center justify-between p-4 border-b border-dark-700 bg-dark-900">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-dark-600 to-dark-700 flex items-center justify-center border border-dark-600 overflow-hidden">
+                  <img 
+                    src={`https://assets.coingecko.com/coins/images/1/small/${selectedSetup.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
+                    alt={selectedSetup.coin}
+                    className="w-6 h-6 object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-white">{selectedSetup.coin}</h2>
+                  <span className={`text-xs ${selectedSetup.bias === 'Bullish' ? 'text-trading-profit' : 'text-trading-loss'}`}>
+                    {selectedSetup.bias} • {selectedSetup.timeframe}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedId(null)}
+                className="p-2 hover:bg-dark-700 rounded-lg transition-colors"
+              >
+                <X size={24} className="text-gray-400" />
+              </button>
+            </div>
+            
+            {/* Chart Content */}
+            <div className="h-[calc(100vh-80px)]">
+              <ChartModal 
+                setup={selectedSetup} 
+                onClose={() => setSelectedId(null)}
+                tier={user?.tier || tier}
+                locked={selectedSetupLocked}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
