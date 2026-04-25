@@ -10,13 +10,13 @@
 
 body {
   font-family: 'JetBrains Mono', monospace;
-  background: #0A0A0F;
+  background: #030508;
   color: #ffffff;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Animated Gradient Background */
+/* Professional Trading Floor Background */
 body::before {
   content: '';
   position: fixed;
@@ -25,11 +25,14 @@ body::before {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(176, 38, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(0, 255, 148, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 60% 30%, rgba(0, 102, 255, 0.05) 0%, transparent 50%);
-  animation: gradientShift 15s ease-in-out infinite;
+    /* Primary cyan glow - top left */
+    radial-gradient(circle at 15% 10%, rgba(0, 212, 255, 0.06) 0%, transparent 40%),
+    /* Secondary blue glow - bottom right */
+    radial-gradient(circle at 85% 90%, rgba(0, 102, 204, 0.05) 0%, transparent 45%),
+    /* Subtle gold premium accent - top right */
+    radial-gradient(circle at 90% 5%, rgba(255, 184, 0, 0.03) 0%, transparent 30%),
+    /* Ambient dark blue - center */
+    radial-gradient(circle at 50% 50%, rgba(0, 102, 204, 0.02) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
