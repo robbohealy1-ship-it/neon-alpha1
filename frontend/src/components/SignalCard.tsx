@@ -164,8 +164,8 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
 
   const getRiskBadge = () => {
     const riskPercent = parseFloat(calculateRiskPercent())
-    if (riskPercent < 2) return { text: 'LOW RISK', color: 'bg-neon-green/20 text-neon-green border-neon-green/50' }
-    if (riskPercent < 4) return { text: 'MEDIUM', color: 'bg-neon-yellow/20 text-neon-yellow border-neon-yellow/50' }
+    if (riskPercent < 2) return { text: 'LOW RISK', color: 'bg-trading-profit/20 text-trading-profit border-trading-profit/50' }
+    if (riskPercent < 4) return { text: 'MEDIUM', color: 'bg-trading-gold/20 text-trading-gold border-trading-gold/50' }
     return { text: 'HIGH RISK', color: 'bg-red-400/20 text-red-400 border-red-400/50' }
   }
 
@@ -174,11 +174,11 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
       case 'FORMING':
         return { text: 'FORMING', color: 'bg-blue-500/20 text-blue-400 border-blue-500/50' }
       case 'TRIGGERED':
-        return { text: 'TRIGGERED', color: 'bg-neon-green/20 text-neon-green border-neon-green/50' }
+        return { text: 'TRIGGERED', color: 'bg-trading-profit/20 text-trading-profit border-trading-profit/50' }
       case 'EXPIRED':
         return { text: 'EXPIRED', color: 'bg-gray-500/20 text-gray-400 border-gray-500/50' }
       case 'SUCCESS':
-        return { text: 'SUCCESS', color: 'bg-neon-green/20 text-neon-green border-neon-green/50' }
+        return { text: 'SUCCESS', color: 'bg-trading-profit/20 text-trading-profit border-trading-profit/50' }
       case 'FAILED':
         return { text: 'FAILED', color: 'bg-red-400/20 text-red-400 border-red-400/50' }
       default:
@@ -215,23 +215,21 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
 
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: signal.direction === 'LONG' 
-        ? '0 0 30px rgba(34, 197, 94, 0.3)' 
-        : '0 0 30px rgba(239, 68, 68, 0.3)'
-      }}
-      className={`glass rounded-xl p-4 border transition-all duration-300 ${
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      className={`rounded-xl p-3 md:p-4 border transition-all duration-300 bg-dark-850/80 backdrop-blur-md ${
         signal.direction === 'LONG' 
-          ? 'border-neon-green/30 hover:border-neon-green/60' 
-          : 'border-red-400/30 hover:border-red-400/60'
+          ? 'border-trading-profit/20 hover:border-trading-profit/40' 
+          : 'border-trading-loss/20 hover:border-trading-loss/40'
       }`}
     >
       {/* Header - Coin & Badge - Improved Layout */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg ${
+      <div className="flex items-start justify-between mb-3 md:mb-4">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className={`w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center overflow-hidden shadow-lg ${
             signal.direction === 'LONG' 
-              ? 'bg-gradient-to-br from-neon-green/40 to-neon-green/10 shadow-neon-green/20' 
-              : 'bg-gradient-to-br from-red-400/40 to-red-400/10 shadow-red-400/20'
+              ? 'bg-gradient-to-br from-trading-profit/30 to-trading-profit/10 shadow-trading-profit/10' 
+              : 'bg-gradient-to-br from-trading-loss/30 to-trading-loss/10 shadow-trading-loss/10'
           }`}>
             <img 
               src={`https://assets.coingecko.com/coins/images/1/small/${signal.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
@@ -253,16 +251,16 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
           </div>
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-2xl font-black tracking-tight">{signal.coin.replace('USDT', '')}</h3>
+              <h3 className="text-xl md:text-2xl font-black tracking-tight">{signal.coin.replace('USDT', '')}</h3>
               {isNew && (
-                <span className="px-2 py-0.5 bg-gradient-to-r from-neon-cyan to-neon-purple text-white text-[10px] font-bold rounded-full animate-pulse flex items-center gap-1 shadow-lg">
+                <span className="px-2 py-0.5 bg-gradient-to-r from-trading-cyan to-trading-blue text-white text-[10px] font-bold rounded-full animate-pulse flex items-center gap-1 shadow-lg shadow-trading-cyan/20">
                   <Zap size={10} />
                   NEW
                 </span>
               )}
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 bg-dark-600/80 rounded-lg text-neon-cyan font-semibold text-xs border border-neon-cyan/20">
+              <span className="px-2 py-0.5 bg-dark-700/80 rounded-lg text-trading-cyan font-semibold text-xs border border-trading-cyan/20">
                 {timeframe}
               </span>
               <span className={`px-2 py-0.5 rounded-lg font-bold text-[10px] border ${statusBadge.color}`}>
@@ -273,20 +271,12 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         </div>
         
         <div className="flex flex-col items-end gap-1">
-          <div className={`group/tooltip relative px-3 py-1.5 rounded-lg font-bold text-sm border cursor-help shadow-md ${
+          <div className={`px-3 py-1.5 rounded-lg font-bold text-sm border shadow-md ${
             signal.direction === 'LONG' 
-              ? 'bg-neon-green/20 text-neon-green border-neon-green/50 shadow-neon-green/20' 
-              : 'bg-red-400/20 text-red-400 border-red-400/50 shadow-red-400/20'
+              ? 'bg-trading-profit/20 text-trading-profit border-trading-profit/50 shadow-trading-profit/10' 
+              : 'bg-trading-loss/20 text-trading-loss border-trading-loss/50 shadow-trading-loss/10'
           }`}>
             {signal.direction}
-            <div className="absolute right-0 top-full mt-2 w-64 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
-              <div className="font-semibold text-neon-cyan mb-1">{strategy}</div>
-              {(signal.reasoning || signal.strategy) && (
-                <div className="text-gray-400">
-                  {signal.reasoning || signal.strategy}
-                </div>
-              )}
-            </div>
           </div>
           <span className="text-[10px] text-gray-500 flex items-center gap-1">
             <Clock size={10} />
@@ -296,8 +286,8 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
       </div>
 
       {/* Strategy Badge - Improved */}
-      <div className="mb-4">
-        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30 shadow-sm">
+      <div className="mb-3 md:mb-4">
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold bg-trading-cyan/10 text-trading-cyan border border-trading-cyan/30 shadow-sm">
           <BarChart3 size={14} />
           {strategy}
         </span>
@@ -313,40 +303,40 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         />
         
         {/* Hover Overlay with Trade Button - Enhanced */}
-        <div className="absolute inset-0 bg-dark-800/85 backdrop-blur-md flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+        <div className="absolute inset-0 bg-dark-900/90 backdrop-blur-md flex flex-col items-center justify-center opacity-0 md:opacity-0 group-hover:opacity-100 md:group-hover:opacity-100 transition-all duration-300 cursor-pointer"
+             onClick={() => onSelect?.(signal)}>
           <button
-            onClick={() => onSelect?.(signal)}
-            className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105 shadow-xl ${
+            className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105 shadow-xl ${
               signal.direction === 'LONG'
-                ? 'bg-gradient-to-r from-neon-green to-neon-cyan text-white'
-                : 'bg-gradient-to-r from-red-400 to-red-600 text-white'
+                ? 'bg-gradient-to-r from-trading-profit to-trading-cyan text-dark-950'
+                : 'bg-gradient-to-r from-trading-loss to-orange-500 text-white'
             }`}
           >
-            View {signal.direction} Setup
+            View Setup
           </button>
-          <div className="mt-3 text-xs text-neon-cyan font-semibold bg-dark-700/80 px-3 py-1 rounded-full">
+          <div className="mt-3 text-xs text-trading-cyan font-semibold bg-dark-800/80 px-3 py-1 rounded-full border border-trading-cyan/20">
             Entry: ${entry.toLocaleString(undefined, {maximumFractionDigits: 2})}
           </div>
         </div>
       </div>
 
       {/* Price Levels - Enhanced Grid */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="bg-dark-700/60 rounded-xl p-3 text-center border border-neon-cyan/10 hover:border-neon-cyan/30 transition-colors">
+      <div className="grid grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-4">
+        <div className="bg-dark-800/60 rounded-xl p-2 md:p-3 text-center border border-trading-cyan/10 hover:border-trading-cyan/30 transition-colors">
           <div className="text-[10px] text-gray-500 uppercase mb-1 font-medium tracking-wide">Entry</div>
-          <div className="text-base font-bold text-neon-cyan">
+          <div className="text-sm md:text-base font-bold text-trading-cyan">
             ${entry.toLocaleString(undefined, {maximumFractionDigits: entry > 1000 ? 0 : 2})}
           </div>
         </div>
-        <div className="bg-dark-700/60 rounded-xl p-3 text-center border border-red-400/10 hover:border-red-400/30 transition-colors">
+        <div className="bg-dark-800/60 rounded-xl p-2 md:p-3 text-center border border-trading-loss/10 hover:border-trading-loss/30 transition-colors">
           <div className="text-[10px] text-gray-500 uppercase mb-1 font-medium tracking-wide">Stop Loss</div>
-          <div className="text-base font-bold text-red-400">
+          <div className="text-sm md:text-base font-bold text-trading-loss">
             ${stopLoss.toLocaleString(undefined, {maximumFractionDigits: stopLoss > 1000 ? 0 : 2})}
           </div>
         </div>
-        <div className="bg-dark-700/60 rounded-xl p-3 text-center border border-neon-green/10 hover:border-neon-green/30 transition-colors">
+        <div className="bg-dark-800/60 rounded-xl p-2 md:p-3 text-center border border-trading-profit/10 hover:border-trading-profit/30 transition-colors">
           <div className="text-[10px] text-gray-500 uppercase mb-1 font-medium tracking-wide">Take Profit</div>
-          <div className="text-base font-bold text-neon-green">
+          <div className="text-sm md:text-base font-bold text-trading-profit">
             ${takeProfit.toLocaleString(undefined, {maximumFractionDigits: takeProfit > 1000 ? 0 : 2})}
           </div>
         </div>
@@ -360,7 +350,7 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
             {riskBadge.text}
           </div>
           <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
-            <div className="font-semibold text-neon-cyan mb-1">Risk Assessment</div>
+            <div className="font-semibold text-trading-cyan mb-1">Risk Assessment</div>
             <div className="text-gray-400">Risk: ${Math.abs(entry - stopLoss).toFixed(4)}</div>
             <div className="text-gray-500">{calculateRiskPercent()}% of entry price</div>
             <div className="text-gray-500 mt-1 text-[10px]">
@@ -371,12 +361,12 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         
         {/* Profit % Badge */}
         <div className="group/tooltip relative">
-          <div className="px-3 py-2 rounded-xl text-xs font-bold bg-neon-green/10 text-neon-green border border-neon-green/30 text-center flex items-center justify-center gap-1 cursor-help shadow-sm">
+          <div className="px-3 py-2 rounded-xl text-xs font-bold bg-trading-profit/10 text-trading-profit border border-trading-profit/30 text-center flex items-center justify-center gap-1 cursor-help shadow-sm">
             <Percent size={10} />
             +{calculateProfitPercent()}%
           </div>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
-            <div className="font-semibold text-neon-green mb-1">Potential Profit</div>
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-800 border border-dark-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+            <div className="font-semibold text-trading-profit mb-1">Potential Profit</div>
             <div className="text-gray-400">Profit: ${Math.abs(takeProfit - entry).toFixed(4)}</div>
             <div className="text-gray-500">{calculateProfitPercent()}% gain if target hit</div>
           </div>
@@ -384,12 +374,12 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         
         {/* R:R Badge */}
         <div className="group/tooltip relative">
-          <div className="px-3 py-2 rounded-xl text-xs font-bold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30 text-center flex items-center justify-center gap-1 cursor-help shadow-sm">
+          <div className="px-3 py-2 rounded-xl text-xs font-bold bg-trading-cyan/10 text-trading-cyan border border-trading-cyan/30 text-center flex items-center justify-center gap-1 cursor-help shadow-sm">
             <Target size={10} />
             {calculateRR()}:1
           </div>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
-            <div className="font-semibold text-neon-cyan mb-1">Risk/Reward Ratio</div>
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-800 border border-dark-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+            <div className="font-semibold text-trading-cyan mb-1">Risk/Reward Ratio</div>
             <div className="text-gray-400">Risk ${Math.abs(entry - stopLoss).toFixed(4)}</div>
             <div className="text-gray-400">Reward ${Math.abs(takeProfit - entry).toFixed(4)}</div>
             <div className="text-gray-500 mt-1">Min 1:2 recommended</div>
@@ -402,21 +392,21 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         <div className="flex justify-between text-xs mb-1.5">
           <span className="text-gray-400 font-medium">AI Confidence Score</span>
           <span className={`font-bold ${
-            signal.confidence >= 80 ? 'text-neon-green' : 
-            signal.confidence >= 60 ? 'text-neon-cyan' : 'text-neon-yellow'
+            signal.confidence >= 80 ? 'text-trading-profit' : 
+            signal.confidence >= 60 ? 'text-trading-cyan' : 'text-trading-gold'
           }`}>{signal.confidence}%</span>
         </div>
-        <div className="w-full bg-dark-600 rounded-full h-2 overflow-hidden">
+        <div className="w-full bg-dark-700 rounded-full h-2 overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${signal.confidence}%` }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className={`h-2 rounded-full ${
               signal.confidence >= 80 
-                ? 'bg-gradient-to-r from-neon-green to-neon-cyan' 
+                ? 'bg-gradient-to-r from-trading-profit to-trading-cyan' 
                 : signal.confidence >= 60 
-                ? 'bg-gradient-to-r from-neon-cyan to-neon-purple' 
-                : 'bg-gradient-to-r from-neon-yellow to-orange-400'
+                ? 'bg-gradient-to-r from-trading-cyan to-trading-blue' 
+                : 'bg-gradient-to-r from-trading-gold to-orange-400'
             }`}
           />
         </div>
@@ -428,7 +418,7 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
           href={`https://www.tradingview.com/chart/?symbol=BINANCE:${signal.coin}&interval=60`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-neon-cyan/10 hover:bg-neon-cyan/20 border border-neon-cyan/30 text-neon-cyan py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105"
+          className="flex-1 bg-trading-cyan/10 hover:bg-trading-cyan/20 border border-trading-cyan/30 text-trading-cyan py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95"
         >
           <BarChart3 size={12} />
           Chart
@@ -437,7 +427,7 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
           href={getExchangeUrl('binance')}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 text-yellow-500 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105"
+          className="flex-1 bg-trading-gold/10 hover:bg-trading-gold/20 border border-trading-gold/30 text-trading-gold py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95"
         >
           <ExternalLink size={12} />
           Binance
@@ -446,7 +436,7 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
           href={getExchangeUrl('bybit')}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-neon-purple/10 hover:bg-neon-purple/20 border border-neon-purple/30 text-neon-purple py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105"
+          className="flex-1 bg-trading-plasma/10 hover:bg-trading-plasma/20 border border-trading-plasma/30 text-trading-plasma py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95"
         >
           <ExternalLink size={12} />
           Bybit
@@ -475,7 +465,7 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
             <button
               onClick={() => onSendAlert(signal)}
               disabled={sendingAlert}
-              className="w-full flex items-center justify-center gap-2 bg-neon-cyan/15 text-neon-cyan border border-neon-cyan/40 py-2.5 rounded-xl text-sm font-bold hover:bg-neon-cyan/25 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 bg-trading-cyan/15 text-trading-cyan border border-trading-cyan/40 py-2.5 rounded-xl text-sm font-bold hover:bg-trading-cyan/25 transition-all disabled:opacity-50"
             >
               {sendingAlert ? (
                 <motion.div
@@ -498,21 +488,16 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         )}
         
         {/* Trade Button */}
-        <div className="group/tooltip relative flex-1">
-          <button
-            onClick={() => onSelect?.(signal)}
-            className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105 shadow-lg ${
-              signal.direction === 'LONG'
-                ? 'bg-gradient-to-r from-neon-green to-neon-cyan text-white shadow-neon-green/25'
-                : 'bg-gradient-to-r from-red-400 to-red-600 text-white shadow-red-400/25'
-            }`}
-          >
-            Trade
-          </button>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
-            View detailed analysis & execute trade
-          </div>
-        </div>
+        <button
+          onClick={() => onSelect?.(signal)}
+          className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 shadow-lg ${
+            signal.direction === 'LONG'
+              ? 'bg-gradient-to-r from-trading-profit to-trading-cyan text-dark-950 shadow-trading-profit/20'
+              : 'bg-gradient-to-r from-trading-loss to-orange-500 text-white shadow-trading-loss/20'
+          }`}
+        >
+          Trade
+        </button>
       </div>
     </motion.div>
   )
