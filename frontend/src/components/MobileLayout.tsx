@@ -2,7 +2,8 @@ import { Outlet, NavLink, Link, useLocation, useNavigate } from 'react-router-do
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   LayoutDashboard, Target, Activity, Archive, History, Sparkles,
-  Bell, Settings, Menu, X, ChevronLeft, User, LogOut, TrendingUp
+  Bell, Settings, Menu, X, ChevronLeft, User, LogOut, TrendingUp,
+  Shield, HelpCircle, CreditCard
 } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { useState, useEffect, useRef } from 'react'
@@ -21,6 +22,9 @@ const mobileNavItems = [
 const moreMenuItems = [
   { to: '/alpha-picks', icon: Sparkles, label: 'Alpha Picks', badge: 'PRO' },
   { to: '/settings', icon: Settings, label: 'Settings' },
+  { to: '/m/security', icon: Shield, label: 'Security' },
+  { to: '/m/billing', icon: CreditCard, label: 'Billing' },
+  { to: '/m/help', icon: HelpCircle, label: 'Help Center' },
 ]
 
 export default function MobileLayout() {

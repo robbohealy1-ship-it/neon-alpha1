@@ -17,6 +17,9 @@ import HelpCenter from './pages/HelpCenter'
 import Security from './pages/Security'
 import Billing from './pages/Billing'
 import AlphaPicks from './pages/AlphaPicks'
+import MobileSecurity from './pages/mobile/MobileSecurity'
+import MobileHelpCenter from './pages/mobile/MobileHelpCenter'
+import MobileBilling from './pages/mobile/MobileBilling'
 import Layout from './components/Layout'
 import './i18n'
 
@@ -52,6 +55,10 @@ function App() {
           <Route path="/help" element={<HelpCenter />} />
           <Route path="/security" element={<Security />} />
           <Route path="/billing" element={<Billing />} />
+          {/* Mobile optimized pages */}
+          <Route path="/m/security" element={<MobileSecurity />} />
+          <Route path="/m/help" element={<MobileHelpCenter />} />
+          <Route path="/m/billing" element={<MobileBilling />} />
         </Route>
         
         {/* Catch all - show landing page */}
