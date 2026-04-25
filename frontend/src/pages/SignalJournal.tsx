@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
-  TrendingUp, 
-  TrendingDown, 
   Target, 
   AlertTriangle,
   Activity,
@@ -12,6 +10,12 @@ import {
   Clock
 } from 'lucide-react'
 import api from '../lib/api'
+
+// Helper to get coin icon URL from symbol
+const getCoinIconUrl = (coin: string) => {
+  const cleanSymbol = coin.toLowerCase().replace('usdt', '').replace('usd', '')
+  return `https://assets.coincap.io/assets/icons/${cleanSymbol}@2x.png`
+}
 
 interface Signal {
   id: string
@@ -231,17 +235,30 @@ export default function SignalJournal() {
                   >
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          signal.direction === 'LONG' ? 'bg-neon-green/20' : 'bg-red-500/20'
+                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden ${
+                          signal.direction === 'LONG' ? 'bg-trading-profit/20' : 'bg-trading-loss/20'
                         }`}>
-                          {signal.direction === 'LONG' ? (
-                            <TrendingUp className="w-4 h-4 text-neon-green" />
-                          ) : (
-                            <TrendingDown className="w-4 h-4 text-red-400" />
-                          )}
+                          <img
+                            src={getCoinIconUrl(signal.coin)}
+                            alt={signal.coin}
+                            className="w-6 h-6 object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement
+                              target.style.display = 'none'
+                              const parent = target.parentElement
+                              if (parent) {
+                                const fallback = document.createElement('div')
+                                fallback.className = `w-6 h-6 rounded flex items-center justify-center text-[9px] font-bold ${
+                                  signal.direction === 'LONG' ? 'text-trading-profit' : 'text-trading-loss'
+                                }`
+                                fallback.textContent = signal.coin.replace('USDT', '').replace('USD', '').slice(0, 2)
+                                parent.appendChild(fallback)
+                              }
+                            }}
+                          />
                         </div>
                         <div>
-                          <div className="font-semibold text-white">{signal.coin}</div>
+                          <div className="font-semibold text-white">{signal.coin.replace('USDT', '')}</div>
                           <div className="text-xs text-gray-500">{signal.timeframe} • {signal.strategy}</div>
                         </div>
                       </div>

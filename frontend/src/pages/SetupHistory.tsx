@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
-  TrendingUp, 
-  TrendingDown, 
   Target, 
   AlertTriangle,
   Clock,
@@ -12,6 +10,12 @@ import {
   BarChart3
 } from 'lucide-react'
 import api from '../lib/api'
+
+// Helper to get coin icon URL from symbol
+const getCoinIconUrl = (symbol: string) => {
+  const cleanSymbol = symbol.toLowerCase().replace('usdt', '').replace('usd', '')
+  return `https://assets.coincap.io/assets/icons/${cleanSymbol}@2x.png`
+}
 
 interface Setup {
   id: string
@@ -218,17 +222,30 @@ export default function SetupHistory() {
                   >
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                          setup.direction === 'bullish' ? 'bg-neon-green/20' : 'bg-red-500/20'
+                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center overflow-hidden ${
+                          setup.direction === 'bullish' ? 'bg-trading-profit/20' : 'bg-trading-loss/20'
                         }`}>
-                          {setup.direction === 'bullish' ? (
-                            <TrendingUp className="w-4 h-4 text-neon-green" />
-                          ) : (
-                            <TrendingDown className="w-4 h-4 text-red-400" />
-                          )}
+                          <img
+                            src={getCoinIconUrl(setup.symbol)}
+                            alt={setup.symbol}
+                            className="w-6 h-6 object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement
+                              target.style.display = 'none'
+                              const parent = target.parentElement
+                              if (parent) {
+                                const fallback = document.createElement('div')
+                                fallback.className = `w-6 h-6 rounded flex items-center justify-center text-[9px] font-bold ${
+                                  setup.direction === 'bullish' ? 'text-trading-profit' : 'text-trading-loss'
+                                }`
+                                fallback.textContent = setup.symbol.replace('USDT', '').replace('USD', '').slice(0, 2)
+                                parent.appendChild(fallback)
+                              }
+                            }}
+                          />
                         </div>
                         <div>
-                          <div className="font-semibold text-white">{setup.symbol}</div>
+                          <div className="font-semibold text-white">{setup.symbol.replace('USDT', '')}</div>
                           <div className="text-xs text-gray-500">{setup.timeframe} • {setup.strategyType}</div>
                         </div>
                       </div>
