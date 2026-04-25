@@ -225,86 +225,86 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
           : 'border-red-400/30 hover:border-red-400/60'
       }`}
     >
-      {/* Header - Coin & Badge */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden ${
+      {/* Header - Coin & Badge - Improved Layout */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg ${
             signal.direction === 'LONG' 
-              ? 'bg-gradient-to-br from-neon-green/30 to-neon-green/10' 
-              : 'bg-gradient-to-br from-red-400/30 to-red-400/10'
+              ? 'bg-gradient-to-br from-neon-green/40 to-neon-green/10 shadow-neon-green/20' 
+              : 'bg-gradient-to-br from-red-400/40 to-red-400/10 shadow-red-400/20'
           }`}>
             <img 
               src={`https://assets.coingecko.com/coins/images/1/small/${signal.coin.toLowerCase().replace('usdt', '').replace('usd', '')}.png`}
               alt={signal.coin}
-              className="w-8 h-8 object-contain"
+              className="w-9 h-9 object-contain drop-shadow-md"
               onError={(e) => {
-                // Fallback to arrow if image fails
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
                 const parent = target.parentElement;
                 if (parent) {
                   const fallback = document.createElement('div');
                   fallback.innerHTML = signal.direction === 'LONG' 
-                    ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>'
-                    : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>';
+                    ? '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>'
+                    : '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline><polyline points="16 17 22 17 22 11"></polyline></svg>';
                   parent.appendChild(fallback.firstChild!);
                 }
               }}
             />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-1">
               <h3 className="text-2xl font-black tracking-tight">{signal.coin.replace('USDT', '')}</h3>
               {isNew && (
-                <span className="px-2 py-0.5 bg-gradient-to-r from-neon-cyan to-neon-purple text-white text-[10px] font-bold rounded-full animate-pulse flex items-center gap-1">
+                <span className="px-2 py-0.5 bg-gradient-to-r from-neon-cyan to-neon-purple text-white text-[10px] font-bold rounded-full animate-pulse flex items-center gap-1 shadow-lg">
                   <Zap size={10} />
                   NEW
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="px-1.5 py-0.5 bg-dark-600 rounded text-neon-cyan font-semibold">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-dark-600/80 rounded-lg text-neon-cyan font-semibold text-xs border border-neon-cyan/20">
                 {timeframe}
               </span>
-              <span className="px-1.5 py-0.5 rounded border font-semibold text-[10px]">
-                <span className={statusBadge.color}>{statusBadge.text}</span>
-              </span>
-              <span className="text-gray-400">•</span>
-              <span className="text-gray-400 flex items-center gap-1">
-                <Clock size={10} />
-                {timeLeft}
+              <span className={`px-2 py-0.5 rounded-lg font-bold text-[10px] border ${statusBadge.color}`}>
+                {statusBadge.text}
               </span>
             </div>
           </div>
         </div>
         
-        <div className={`group/tooltip relative px-3 py-1.5 rounded-lg font-bold text-sm border cursor-help ${
-          signal.direction === 'LONG' 
-            ? 'bg-neon-green/20 text-neon-green border-neon-green/50' 
-            : 'bg-red-400/20 text-red-400 border-red-400/50'
-        }`}>
-          {signal.direction}
-          <div className="absolute right-0 top-full mt-2 w-64 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
-            <div className="font-semibold text-neon-cyan mb-1">{strategy}</div>
-            {(signal.reasoning || signal.strategy) && (
-              <div className="text-gray-400">
-                {signal.reasoning || signal.strategy}
-              </div>
-            )}
+        <div className="flex flex-col items-end gap-1">
+          <div className={`group/tooltip relative px-3 py-1.5 rounded-lg font-bold text-sm border cursor-help shadow-md ${
+            signal.direction === 'LONG' 
+              ? 'bg-neon-green/20 text-neon-green border-neon-green/50 shadow-neon-green/20' 
+              : 'bg-red-400/20 text-red-400 border-red-400/50 shadow-red-400/20'
+          }`}>
+            {signal.direction}
+            <div className="absolute right-0 top-full mt-2 w-64 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
+              <div className="font-semibold text-neon-cyan mb-1">{strategy}</div>
+              {(signal.reasoning || signal.strategy) && (
+                <div className="text-gray-400">
+                  {signal.reasoning || signal.strategy}
+                </div>
+              )}
+            </div>
           </div>
+          <span className="text-[10px] text-gray-500 flex items-center gap-1">
+            <Clock size={10} />
+            {timeLeft}
+          </span>
         </div>
       </div>
 
-      {/* Strategy Badge */}
-      <div className="mb-3">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30">
-          <BarChart3 size={12} />
+      {/* Strategy Badge - Improved */}
+      <div className="mb-4">
+        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30 shadow-sm">
+          <BarChart3 size={14} />
           {strategy}
         </span>
       </div>
 
-      {/* Chart Section - Mini TradingView Widget */}
-      <div className="relative h-28 mb-3 bg-dark-700/30 rounded-xl overflow-hidden group">
+      {/* Chart Section - Enhanced Mini TradingView Widget */}
+      <div className="relative h-32 mb-4 bg-dark-700/40 rounded-xl overflow-hidden group border border-gray-700/50">
         <MiniTradingViewChart 
           symbol={signal.coin.replace('USDT', '').replace('USD', '')}
           theme="dark"
@@ -312,54 +312,54 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
           timeframe={timeframe}
         />
         
-        {/* Hover Overlay with Trade Button */}
-        <div className="absolute inset-0 bg-dark-800/80 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+        {/* Hover Overlay with Trade Button - Enhanced */}
+        <div className="absolute inset-0 bg-dark-800/85 backdrop-blur-md flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
           <button
             onClick={() => onSelect?.(signal)}
-            className={`px-6 py-2 rounded-lg text-sm font-bold transition-all hover:scale-105 shadow-lg ${
+            className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105 shadow-xl ${
               signal.direction === 'LONG'
                 ? 'bg-gradient-to-r from-neon-green to-neon-cyan text-white'
                 : 'bg-gradient-to-r from-red-400 to-red-600 text-white'
             }`}
           >
-            {signal.direction} Trade
+            View {signal.direction} Setup
           </button>
-          <div className="mt-2 text-xs text-neon-cyan font-semibold">
+          <div className="mt-3 text-xs text-neon-cyan font-semibold bg-dark-700/80 px-3 py-1 rounded-full">
             Entry: ${entry.toLocaleString(undefined, {maximumFractionDigits: 2})}
           </div>
         </div>
       </div>
 
-      {/* Price Levels - Compact Grid */}
-      <div className="grid grid-cols-3 gap-2 mb-3">
-        <div className="bg-dark-700/50 rounded-lg p-2 text-center">
-          <div className="text-[10px] text-gray-500 uppercase mb-1">Entry</div>
-          <div className="text-sm font-bold text-neon-cyan">
+      {/* Price Levels - Enhanced Grid */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="bg-dark-700/60 rounded-xl p-3 text-center border border-neon-cyan/10 hover:border-neon-cyan/30 transition-colors">
+          <div className="text-[10px] text-gray-500 uppercase mb-1 font-medium tracking-wide">Entry</div>
+          <div className="text-base font-bold text-neon-cyan">
             ${entry.toLocaleString(undefined, {maximumFractionDigits: entry > 1000 ? 0 : 2})}
           </div>
         </div>
-        <div className="bg-dark-700/50 rounded-lg p-2 text-center">
-          <div className="text-[10px] text-gray-500 uppercase mb-1">Stop Loss</div>
-          <div className="text-sm font-bold text-red-400">
+        <div className="bg-dark-700/60 rounded-xl p-3 text-center border border-red-400/10 hover:border-red-400/30 transition-colors">
+          <div className="text-[10px] text-gray-500 uppercase mb-1 font-medium tracking-wide">Stop Loss</div>
+          <div className="text-base font-bold text-red-400">
             ${stopLoss.toLocaleString(undefined, {maximumFractionDigits: stopLoss > 1000 ? 0 : 2})}
           </div>
         </div>
-        <div className="bg-dark-700/50 rounded-lg p-2 text-center">
-          <div className="text-[10px] text-gray-500 uppercase mb-1">Take Profit</div>
-          <div className="text-sm font-bold text-neon-green">
+        <div className="bg-dark-700/60 rounded-xl p-3 text-center border border-neon-green/10 hover:border-neon-green/30 transition-colors">
+          <div className="text-[10px] text-gray-500 uppercase mb-1 font-medium tracking-wide">Take Profit</div>
+          <div className="text-base font-bold text-neon-green">
             ${takeProfit.toLocaleString(undefined, {maximumFractionDigits: takeProfit > 1000 ? 0 : 2})}
           </div>
         </div>
       </div>
 
-      {/* Stats Row - Risk, Profit %, R:R with Tooltips */}
-      <div className="grid grid-cols-3 gap-2 mb-3">
+      {/* Stats Row - Enhanced Risk, Profit %, R:R with Tooltips */}
+      <div className="grid grid-cols-3 gap-2 mb-4">
         {/* Risk Badge */}
         <div className="group/tooltip relative">
-          <div className={`px-2 py-1.5 rounded-lg text-xs font-semibold border text-center cursor-help ${riskBadge.color}`}>
+          <div className={`px-3 py-2 rounded-xl text-xs font-bold border text-center cursor-help shadow-sm ${riskBadge.color}`}>
             {riskBadge.text}
           </div>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
             <div className="font-semibold text-neon-cyan mb-1">Risk Assessment</div>
             <div className="text-gray-400">Risk: ${Math.abs(entry - stopLoss).toFixed(4)}</div>
             <div className="text-gray-500">{calculateRiskPercent()}% of entry price</div>
@@ -371,11 +371,11 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         
         {/* Profit % Badge */}
         <div className="group/tooltip relative">
-          <div className="px-2 py-1.5 rounded-lg text-xs font-semibold bg-neon-green/10 text-neon-green border border-neon-green/30 text-center flex items-center justify-center gap-1 cursor-help">
+          <div className="px-3 py-2 rounded-xl text-xs font-bold bg-neon-green/10 text-neon-green border border-neon-green/30 text-center flex items-center justify-center gap-1 cursor-help shadow-sm">
             <Percent size={10} />
             +{calculateProfitPercent()}%
           </div>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
             <div className="font-semibold text-neon-green mb-1">Potential Profit</div>
             <div className="text-gray-400">Profit: ${Math.abs(takeProfit - entry).toFixed(4)}</div>
             <div className="text-gray-500">{calculateProfitPercent()}% gain if target hit</div>
@@ -384,11 +384,11 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         
         {/* R:R Badge */}
         <div className="group/tooltip relative">
-          <div className="px-2 py-1.5 rounded-lg text-xs font-semibold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30 text-center flex items-center justify-center gap-1 cursor-help">
+          <div className="px-3 py-2 rounded-xl text-xs font-bold bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30 text-center flex items-center justify-center gap-1 cursor-help shadow-sm">
             <Target size={10} />
-            R:R {calculateRR()}
+            {calculateRR()}:1
           </div>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-3 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-xl">
             <div className="font-semibold text-neon-cyan mb-1">Risk/Reward Ratio</div>
             <div className="text-gray-400">Risk ${Math.abs(entry - stopLoss).toFixed(4)}</div>
             <div className="text-gray-400">Reward ${Math.abs(takeProfit - entry).toFixed(4)}</div>
@@ -397,63 +397,74 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         </div>
       </div>
 
-      {/* Confidence Bar */}
-      <div className="mb-3">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-400">Confidence</span>
-          <span className="font-semibold text-neon-purple">{signal.confidence}%</span>
+      {/* Confidence Bar - Enhanced */}
+      <div className="mb-4">
+        <div className="flex justify-between text-xs mb-1.5">
+          <span className="text-gray-400 font-medium">AI Confidence Score</span>
+          <span className={`font-bold ${
+            signal.confidence >= 80 ? 'text-neon-green' : 
+            signal.confidence >= 60 ? 'text-neon-cyan' : 'text-neon-yellow'
+          }`}>{signal.confidence}%</span>
         </div>
-        <div className="w-full bg-dark-600 rounded-full h-1.5">
-          <div
-            className="bg-gradient-to-r from-neon-cyan to-neon-purple h-1.5 rounded-full"
-            style={{ width: `${signal.confidence}%` }}
+        <div className="w-full bg-dark-600 rounded-full h-2 overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${signal.confidence}%` }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className={`h-2 rounded-full ${
+              signal.confidence >= 80 
+                ? 'bg-gradient-to-r from-neon-green to-neon-cyan' 
+                : signal.confidence >= 60 
+                ? 'bg-gradient-to-r from-neon-cyan to-neon-purple' 
+                : 'bg-gradient-to-r from-neon-yellow to-orange-400'
+            }`}
           />
         </div>
       </div>
 
-      {/* Exchange Quick Links */}
-      <div className="flex gap-2 mb-3">
+      {/* Exchange Quick Links - Enhanced */}
+      <div className="flex gap-2 mb-4">
         <a
           href={`https://www.tradingview.com/chart/?symbol=BINANCE:${signal.coin}&interval=60`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-neon-cyan/10 hover:bg-neon-cyan/20 border border-neon-cyan/30 text-neon-cyan py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
+          className="flex-1 bg-neon-cyan/10 hover:bg-neon-cyan/20 border border-neon-cyan/30 text-neon-cyan py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105"
         >
-          <BarChart3 size={10} />
-          TradingView
+          <BarChart3 size={12} />
+          Chart
         </a>
         <a
           href={getExchangeUrl('binance')}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 text-yellow-500 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
+          className="flex-1 bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/30 text-yellow-500 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105"
         >
-          <ExternalLink size={10} />
+          <ExternalLink size={12} />
           Binance
         </a>
         <a
           href={getExchangeUrl('bybit')}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 bg-neon-purple/10 hover:bg-neon-purple/20 border border-neon-purple/30 text-neon-purple py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors"
+          className="flex-1 bg-neon-purple/10 hover:bg-neon-purple/20 border border-neon-purple/30 text-neon-purple py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:scale-105"
         >
-          <ExternalLink size={10} />
+          <ExternalLink size={12} />
           Bybit
         </a>
       </div>
 
-      {/* Actions with tooltips */}
+      {/* Actions with tooltips - Enhanced */}
       <div className="flex gap-2">
         {/* Copy Button */}
         <div className="group/tooltip relative flex-1">
           <button
             onClick={handleCopyTrade}
-            className="w-full flex items-center justify-center gap-2 bg-dark-600 hover:bg-dark-500 text-white py-2 rounded-lg text-sm font-semibold transition-colors"
+            className="w-full flex items-center justify-center gap-2 bg-dark-600/80 hover:bg-dark-500 text-white py-2.5 rounded-xl text-sm font-bold transition-all border border-gray-700 hover:border-gray-600"
           >
             <Copy size={14} />
             Copy
           </button>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-40 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
             Copy trade details to clipboard
           </div>
         </div>
@@ -464,7 +475,7 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
             <button
               onClick={() => onSendAlert(signal)}
               disabled={sendingAlert}
-              className="w-full flex items-center justify-center gap-2 bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/50 py-2 rounded-lg text-sm font-semibold hover:bg-neon-cyan/30 transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 bg-neon-cyan/15 text-neon-cyan border border-neon-cyan/40 py-2.5 rounded-xl text-sm font-bold hover:bg-neon-cyan/25 transition-all disabled:opacity-50"
             >
               {sendingAlert ? (
                 <motion.div
@@ -480,7 +491,7 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
                 </>
               )}
             </button>
-            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-40 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
               Send to Telegram (1 per coin per 10 min)
             </div>
           </div>
@@ -490,15 +501,15 @@ export default function SignalCard({ signal, onSelect, onSendAlert, sendingAlert
         <div className="group/tooltip relative flex-1">
           <button
             onClick={() => onSelect?.(signal)}
-            className={`w-full py-2 rounded-lg text-sm font-semibold transition-all hover:scale-105 ${
+            className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105 shadow-lg ${
               signal.direction === 'LONG'
-                ? 'bg-gradient-to-r from-neon-green to-neon-cyan text-white'
-                : 'bg-gradient-to-r from-red-400 to-red-600 text-white'
+                ? 'bg-gradient-to-r from-neon-green to-neon-cyan text-white shadow-neon-green/25'
+                : 'bg-gradient-to-r from-red-400 to-red-600 text-white shadow-red-400/25'
             }`}
           >
             Trade
           </button>
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-40 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-44 p-2 bg-dark-700 border border-gray-600 rounded-lg text-xs text-gray-300 opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
             View detailed analysis & execute trade
           </div>
         </div>

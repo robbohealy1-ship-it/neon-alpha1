@@ -103,11 +103,11 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6 overflow-y-auto pb-20">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gradient mb-2">{t('settings')}</h1>
-          <p className="text-gray-400">{t('managePreferences')}</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gradient mb-1 sm:mb-2">{t('settings')}</h1>
+          <p className="text-sm sm:text-base text-gray-400">{t('managePreferences')}</p>
           {errorMessage && <p className="text-neon-red mt-2 text-sm">{errorMessage}</p>}
         </div>
         {saved && (
@@ -116,40 +116,40 @@ export default function Settings() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-neon-green"
           >
-            <CheckCircle size={20} />
-            <span className="font-medium">{t('saved')}</span>
+            <CheckCircle size={18} className="sm:w-5 sm:h-5" />
+            <span className="font-medium text-sm sm:text-base">{t('saved')}</span>
           </motion.div>
         )}
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-4 sm:gap-6">
         {/* Account Settings */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass rounded-xl p-6"
+          className="glass rounded-xl p-4 sm:p-6"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <User className="text-neon-cyan" size={24} />
-            <h2 className="text-xl font-semibold">{t('account')}</h2>
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <User className="text-neon-cyan" size={20} />
+            <h2 className="text-lg sm:text-xl font-semibold">{t('account')}</h2>
           </div>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">{t('displayName')}</label>
+              <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">{t('displayName')}</label>
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-neon-cyan transition-colors"
+                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-neon-cyan transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">{t('email')}</label>
+              <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">{t('email')}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-neon-cyan transition-colors"
+                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-neon-cyan transition-colors"
               />
             </div>
           </div>
@@ -160,21 +160,21 @@ export default function Settings() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="glass rounded-xl p-6"
+          className="glass rounded-xl p-4 sm:p-6"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <Bell className="text-neon-cyan" size={24} />
-            <h2 className="text-xl font-semibold">{t('notifications')}</h2>
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Bell className="text-neon-cyan" size={20} />
+            <h2 className="text-lg sm:text-xl font-semibold">{t('notifications')}</h2>
           </div>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">{t('priceAlerts')}</p>
-                <p className="text-sm text-gray-400">{t('priceAlertsDesc')}</p>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm sm:text-base">{t('priceAlerts')}</p>
+                <p className="text-xs sm:text-sm text-gray-400 truncate">{t('priceAlertsDesc')}</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+              <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
                 <input type="checkbox" checked={priceAlerts} onChange={(e) => setPriceAlerts(e.target.checked)} className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neon-cyan"></div>
+                <div className="w-9 sm:w-11 h-5 sm:h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 sm:after:h-5 after:w-4 sm:after:w-5 after:transition-all peer-checked:bg-neon-cyan"></div>
               </label>
             </div>
             <div className="flex items-center justify-between">
@@ -205,19 +205,19 @@ export default function Settings() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="glass rounded-xl p-6"
+          className="glass rounded-xl p-4 sm:p-6"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <Moon className="text-neon-cyan" size={24} />
-            <h2 className="text-xl font-semibold">{t('appearance')}</h2>
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Moon className="text-neon-cyan" size={20} />
+            <h2 className="text-lg sm:text-xl font-semibold">{t('appearance')}</h2>
           </div>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">{t('theme')}</label>
+              <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">{t('theme')}</label>
               <select 
                 value={theme}
                 onChange={(e) => setTheme(e.target.value)}
-                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-neon-cyan transition-colors"
+                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-neon-cyan transition-colors"
               >
                 <option value="dark">{t('darkMode')}</option>
                 <option value="light">{t('lightMode')}</option>
@@ -225,11 +225,11 @@ export default function Settings() {
               </select>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">{t('language')}</label>
+              <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">{t('language')}</label>
               <select 
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-neon-cyan transition-colors"
+                className="w-full bg-dark-700 border border-gray-700 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-neon-cyan transition-colors"
               >
                 <option value="en">English</option>
                 <option value="es">Español</option>
@@ -245,11 +245,12 @@ export default function Settings() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+          className="sticky bottom-0"
         >
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full bg-gradient-animate text-white font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 neon-glow"
+            className="w-full bg-gradient-animate text-white font-semibold py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 neon-glow text-sm sm:text-base"
           >
             {saving ? t('saving') : t('saveChanges')}
           </button>

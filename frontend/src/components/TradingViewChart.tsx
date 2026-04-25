@@ -7,11 +7,17 @@ interface TradingViewChartProps {
   timeframe?: string
 }
 
-// Always just show Volume at bottom - clean chart view
-const getStrategyIndicators = (): string[] => {
-  // Only Volume indicator to keep chart clean
-  // Users can add their own indicators via TradingView toolbar
-  return ['Volume@tv-basicstudies']
+// Enable trade-specific indicators and tools
+const getStrategyIndicators = (_strategy?: string[]): string[] => {
+  const indicators: string[] = []
+  
+  // Add RSI for momentum
+  indicators.push('RSI@tv-basicstudies')
+  
+  // Add Bollinger Bands for volatility and price channels
+  indicators.push('BB@tv-basicstudies')
+  
+  return indicators
 }
 
 // Map timeframe to TradingView interval
@@ -42,8 +48,8 @@ export default function TradingViewChart({
     // Map common crypto symbols to TradingView format
     const tvSymbol = `BINANCE:${symbol}USDT`
     
-    // Get indicators (Volume only)
-    const indicators = getStrategyIndicators()
+    // Get trade-specific indicators
+    const indicators = getStrategyIndicators(strategy)
     const interval = getTimeframeInterval(timeframe)
 
     const script = document.createElement('script')
@@ -57,31 +63,52 @@ export default function TradingViewChart({
       theme: theme,
       style: '1',
       locale: 'en',
-      enable_publishing: true,
+      enable_publishing: false,
       withdateranges: true,
       range: '1D',
       hide_top_toolbar: false,
       hide_legend: false,
       save_image: true,
-      calendar: true,
-      hotlist: true,
-      news: ['headlines'],
-      hide_volume: false,
+      calendar: false,
+      hotlist: false,
+      hide_volume: true,
       hide_side_toolbar: false,
       details: true,
       studies: indicators,
       support_host: 'https://www.tradingview.com',
-      enabled_features: ['show_logarithmic_scale', 'study_templates'],
-      disabled_features: ['use_localstorage_for_settings'],
+      enabled_features: [
+        'show_logarithmic_scale', 
+        'study_templates',
+        'side_toolbar_in_fullscreen_mode',
+        'header_in_fullscreen_mode'
+      ],
+      disabled_features: [
+        'use_localstorage_for_settings',
+        'volume_force_overlay'
+      ],
       drawings_access: {
-        type: 'black',
+        type: 'white',
         tools: [
-          { name: 'Prediction', grayed: false },
-          { name: 'Annotation', grayed: false },
+          { name: 'Trend Line', grayed: false },
+          { name: 'Ray', grayed: false },
+          { name: 'Extended Line', grayed: false },
+          { name: 'Horizontal Line', grayed: false },
+          { name: 'Horizontal Ray', grayed: false },
+          { name: 'Parallel Channel', grayed: false },
+          { name: 'Fib Retracement', grayed: false },
+          { name: 'Fib Extension', grayed: false },
           { name: 'Long Position', grayed: false },
           { name: 'Short Position', grayed: false },
           { name: 'Risk/Reward Long', grayed: false },
-          { name: 'Risk/Reward Short', grayed: false }
+          { name: 'Risk/Reward Short', grayed: false },
+          { name: 'Date Range', grayed: false },
+          { name: 'Price Range', grayed: false },
+          { name: 'Rectangle', grayed: false },
+          { name: 'Circle', grayed: false },
+          { name: 'Text', grayed: false },
+          { name: 'Callout', grayed: false },
+          { name: 'Arrow', grayed: false },
+          { name: 'Measure', grayed: false }
         ]
       }
     })

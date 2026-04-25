@@ -94,26 +94,26 @@ export default function HelpCenter() {
   )
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 overflow-y-auto pb-20">
       <div>
-        <h1 className="text-3xl font-bold text-gradient mb-2">Help Center</h1>
-        <p className="text-gray-400">Find answers to common questions</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gradient mb-1 sm:mb-2">Help Center</h1>
+        <p className="text-sm sm:text-base text-gray-400">Find answers to common questions</p>
       </div>
 
       {/* Search */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass rounded-xl p-6"
+        className="glass rounded-xl p-4 sm:p-6"
       >
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           <input
             type="text"
             placeholder="Search for help..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-dark-700 border border-gray-700 rounded-lg pl-12 pr-4 py-3 focus:outline-none focus:border-neon-cyan transition-colors"
+            className="w-full bg-dark-700 border border-gray-700 rounded-lg pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:border-neon-cyan transition-colors"
           />
         </div>
       </motion.div>
@@ -123,35 +123,35 @@ export default function HelpCenter() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
       >
         <a 
           href="https://docs.neonalpha.com" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="glass glass-hover rounded-xl p-6 cursor-pointer"
+          className="glass glass-hover rounded-xl p-4 sm:p-6 cursor-pointer"
         >
-          <Book className="text-neon-cyan mb-3" size={32} />
-          <h3 className="font-semibold mb-2">Documentation</h3>
-          <p className="text-sm text-gray-400">Comprehensive guides and tutorials</p>
+          <Book className="text-neon-cyan mb-2 sm:mb-3" size={24} />
+          <h3 className="font-semibold text-sm sm:text-base mb-1 sm:mb-2">Documentation</h3>
+          <p className="text-xs sm:text-sm text-gray-400">Comprehensive guides and tutorials</p>
         </a>
         <a 
           href="https://discord.gg/neonalpha" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="glass glass-hover rounded-xl p-6 cursor-pointer"
+          className="glass glass-hover rounded-xl p-4 sm:p-6 cursor-pointer"
         >
-          <MessageCircle className="text-neon-cyan mb-3" size={32} />
-          <h3 className="font-semibold mb-2">Discord Community</h3>
-          <p className="text-sm text-gray-400">Join 10,000+ traders in our Discord</p>
+          <MessageCircle className="text-neon-cyan mb-2 sm:mb-3" size={24} />
+          <h3 className="font-semibold text-sm sm:text-base mb-1 sm:mb-2">Discord Community</h3>
+          <p className="text-xs sm:text-sm text-gray-400">Join 10,000+ traders in our Discord</p>
         </a>
         <a 
           href="mailto:support@neonalpha.com" 
-          className="glass glass-hover rounded-xl p-6 cursor-pointer"
+          className="glass glass-hover rounded-xl p-4 sm:p-6 cursor-pointer sm:col-span-2 lg:col-span-1"
         >
-          <Mail className="text-neon-cyan mb-3" size={32} />
-          <h3 className="font-semibold mb-2">Email Support</h3>
-          <p className="text-sm text-gray-400">support@neonalpha.com</p>
+          <Mail className="text-neon-cyan mb-2 sm:mb-3" size={24} />
+          <h3 className="font-semibold text-sm sm:text-base mb-1 sm:mb-2">Email Support</h3>
+          <p className="text-xs sm:text-sm text-gray-400">support@neonalpha.com</p>
         </a>
       </motion.div>
 
@@ -160,23 +160,23 @@ export default function HelpCenter() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="glass rounded-xl p-6"
+        className="glass rounded-xl p-4 sm:p-6"
       >
-        <div className="flex items-center gap-3 mb-6">
-          <HelpCircle className="text-neon-cyan" size={24} />
-          <h2 className="text-xl font-semibold">Frequently Asked Questions</h2>
+        <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <HelpCircle className="text-neon-cyan" size={20} />
+          <h2 className="text-lg sm:text-xl font-semibold">Frequently Asked Questions</h2>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4 max-h-[60vh] overflow-y-auto pr-2">
           {filteredFaqs.map((faq, index) => (
             <div key={index} className="border border-gray-800 rounded-lg overflow-hidden">
               <details className="group">
-                <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-dark-700 transition-colors">
-                  <span className="font-medium">{faq.question}</span>
-                  <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <summary className="flex items-center justify-between p-3 sm:p-4 cursor-pointer hover:bg-dark-700 transition-colors">
+                  <span className="font-medium text-sm sm:text-base pr-2">{faq.question}</span>
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
-                <div className="p-4 pt-0 text-gray-400">
+                <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-0 text-gray-400 text-sm sm:text-base leading-relaxed">
                   {faq.answer}
                 </div>
               </details>

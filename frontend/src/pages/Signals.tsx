@@ -612,9 +612,9 @@ function SignalsContent() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredSignals.map((signal, index) => {
-            // Check if this signal should be blurred based on tier
-            // FREE tier: show only first signal, blur rest
-            const isBlurred = isFreeTier && index > 0
+            // Only block for STARTER tier - show all signals for basic, pro, lifetime
+            const isStarterTier = tier === 'starter'
+            const isBlurred = isStarterTier && index > 0
             
             return (
               <motion.div
@@ -624,7 +624,7 @@ function SignalsContent() {
                 transition={{ delay: index * 0.05 }}
                 className={isBlurred ? 'relative' : ''}
               >
-                {/* Blurred Signal Card */}
+                {/* Signal Card - Always full access for basic+ tiers */}
                 <div className={isBlurred ? 'blur-md pointer-events-none' : ''}>
                   <SignalCard 
                     signal={signal} 
@@ -635,17 +635,19 @@ function SignalsContent() {
                   />
                 </div>
                 
-                {/* Paywall Overlay for Blurred Signals */}
+                {/* Paywall Overlay - Only for Starter Tier */}
                 {isBlurred && (
                   <div 
                     onClick={() => navigate('/pricing')}
-                    className="absolute inset-0 flex flex-col items-center justify-center bg-dark-800/60 rounded-lg p-4 backdrop-blur-sm cursor-pointer hover:bg-dark-800/80 transition-colors group"
+                    className="absolute inset-0 flex flex-col items-center justify-center bg-dark-800/70 rounded-xl p-4 backdrop-blur-sm cursor-pointer hover:bg-dark-800/85 transition-all group border border-neon-purple/30"
                   >
-                    <Lock className="w-8 h-8 text-neon-purple mb-2 group-hover:scale-110 transition-transform" />
-                    <p className="text-sm font-semibold text-white text-center">Premium Signal</p>
-                    <p className="text-xs text-gray-400 text-center mt-1">Click to upgrade</p>
-                    <button className="mt-3 px-4 py-2 bg-gradient-to-r from-neon-purple to-pink-500 rounded-lg text-white text-xs font-bold hover:scale-105 transition-transform">
-                      Unlock Now
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-neon-purple to-pink-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Lock className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="text-sm font-bold text-white text-center">Starter: 1 Signal Only</p>
+                    <p className="text-xs text-gray-400 text-center mt-1">Upgrade to see all {filteredSignals.length} signals</p>
+                    <button className="mt-4 px-5 py-2.5 bg-gradient-to-r from-neon-cyan to-neon-purple rounded-lg text-white text-xs font-bold hover:scale-105 transition-transform shadow-lg">
+                      Upgrade to Basic
                     </button>
                   </div>
                 )}
@@ -655,34 +657,33 @@ function SignalsContent() {
         </div>
       )}
       
-      {/* Paywall CTA for BASIC Tier Users - 1 signal limit */}
-      {(limitReached || (tier === 'basic' && totalAvailable > 1)) && (
+      {/* Paywall CTA for STARTER Tier Users - 1 signal limit */}
+      {(tier === 'starter' && filteredSignals.length > 1) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-8 glass rounded-2xl p-8 border border-neon-purple/30 bg-gradient-to-r from-neon-purple/10 to-transparent"
+          className="mt-8 glass rounded-2xl p-8 border border-neon-cyan/30 bg-gradient-to-r from-neon-cyan/10 to-transparent"
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
               <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
-                <Lock className="w-5 h-5 text-neon-purple" />
-                <h3 className="text-xl font-bold text-white">🔓 Unlock {totalAvailable}+ Live Trade Signals with PRO</h3>
+                <Lock className="w-5 h-5 text-neon-cyan" />
+                <h3 className="text-xl font-bold text-white">Unlock All {filteredSignals.length} Signals</h3>
               </div>
               <p className="text-gray-400 text-sm mb-2">
-                BASIC tier: You can see 1 active signal. Upgrade to PRO for unlimited signals from all trade setups.
+                Starter tier: Limited to 1 signal. Upgrade to Basic for {filteredSignals.length}+ active signals and full access.
               </p>
               <div className="flex flex-wrap gap-2 justify-center md:justify-start text-xs text-gray-500">
-                <span className="flex items-center gap-1"><Zap size={12} className="text-neon-yellow" /> Unlimited signals</span>
-                <span className="flex items-center gap-1"><TrendingUp size={12} className="text-neon-green" /> All trade setups</span>
-                <span className="flex items-center gap-1"><Bell size={12} className="text-neon-cyan" /> Telegram notifications</span>
-                <span className="flex items-center gap-1"><Activity size={12} className="text-neon-purple" /> Full chart overlays</span>
+                <span className="flex items-center gap-1"><Zap size={12} className="text-neon-yellow" /> All signals unlocked</span>
+                <span className="flex items-center gap-1"><TrendingUp size={12} className="text-neon-green" /> Full trade setups</span>
+                <span className="flex items-center gap-1"><Bell size={12} className="text-neon-cyan" /> Basic analytics</span>
               </div>
             </div>
             <Link 
               to="/pricing"
-              className="px-8 py-4 bg-gradient-to-r from-neon-purple to-pink-500 rounded-xl font-bold text-white hover:scale-105 transition-transform whitespace-nowrap"
+              className="px-8 py-4 bg-gradient-to-r from-neon-cyan to-neon-purple rounded-xl font-bold text-white hover:scale-105 transition-transform whitespace-nowrap"
             >
-              Upgrade to PRO
+              Upgrade to Basic
             </Link>
           </div>
         </motion.div>

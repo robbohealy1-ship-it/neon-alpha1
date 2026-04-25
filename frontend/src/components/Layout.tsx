@@ -2,15 +2,18 @@ import { Outlet, NavLink, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LayoutDashboard, Target, BookOpen, Star, BarChart3, LogOut, Bell, Settings, HelpCircle, Shield, CreditCard, Zap, Activity, Sparkles, Archive, History } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import api from '../lib/api'
 import { useTranslation } from 'react-i18next'
+import { Menu, X } from 'lucide-react'
 
 export default function Layout() {
   const { t } = useTranslation()
   const { user, logout, token } = useAuthStore()
   const [alerts, setAlerts] = useState<any[]>([])
   const [showAlerts, setShowAlerts] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     // Only load alerts if user is authenticated
@@ -64,12 +67,26 @@ export default function Layout() {
     { to: '/alpha-picks', icon: Sparkles, label: 'Alpha Picks', badge: 'PRO', public: true },
   ]
 
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setMobileMenuOpen(false)
+      }
+    }
+    if (mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [mobileMenuOpen])
+
   return (
-    <div className="flex h-screen bg-dark-900">
+    <div className="flex h-screen bg-dark-900 overflow-hidden">
+      {/* Desktop Sidebar - Hidden on mobile */}
       <motion.aside
         initial={{ x: -300 }}
         animate={{ x: 0 }}
-        className="w-64 glass border-r border-gray-800 flex flex-col"
+        className="hidden md:flex w-64 glass border-r border-gray-800 flex-col flex-shrink-0"
       >
         <div className="p-6 border-b border-gray-800">
           <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity group" title="Back to Home">
@@ -196,7 +213,7 @@ export default function Layout() {
         </div>
       </motion.aside>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden w-full">
         <header className="h-16 glass border-b border-gray-800 flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -245,10 +262,147 @@ export default function Layout() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-4 pb-24 md:p-6 md:pb-6">
           <Outlet />
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation - Only visible on mobile */}
+      {user && (
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-gray-800 z-50">
+          <div className="flex items-center justify-around px-2 py-2">
+            {authenticatedNavItems.slice(0, 5).map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${
+                    isActive
+                      ? 'text-neon-cyan'
+                      : 'text-gray-400'
+                  }`
+                }
+              >
+                <item.icon size={20} />
+                <span className="text-[10px] font-medium truncate max-w-[60px]">{item.label}</span>
+              </NavLink>
+            ))}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-gray-400"
+            >
+              <Menu size={20} />
+              <span className="text-[10px] font-medium">More</span>
+            </button>
+          </div>
+        </nav>
+      )}
+
+      {/* Mobile Menu Drawer */}
+      {mobileMenuOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setMobileMenuOpen(false)} />
+          <motion.div
+            ref={mobileMenuRef}
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            className="fixed top-0 right-0 bottom-0 w-72 glass border-l border-gray-800 z-50 flex flex-col"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-gray-800">
+              <h2 className="text-lg font-bold text-gradient">Menu</h2>
+              <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-dark-700 rounded-lg">
+                <X size={20} className="text-gray-400" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {authenticatedNavItems.slice(5).map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                      isActive
+                        ? 'bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30'
+                        : 'text-gray-400 hover:bg-dark-700 hover:text-white'
+                    }`
+                  }
+                >
+                  <item.icon size={20} />
+                  <span className="font-medium">{item.label}</span>
+                </NavLink>
+              ))}
+              <div className="border-t border-gray-800 my-4" />
+              <NavLink
+                to="/settings"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-dark-700 hover:text-white transition-all"
+              >
+                <Settings size={20} />
+                <span className="font-medium">{t('settings')}</span>
+              </NavLink>
+              <NavLink
+                to="/help"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-dark-700 hover:text-white transition-all"
+              >
+                <HelpCircle size={20} />
+                <span className="font-medium">{t('helpCenter')}</span>
+              </NavLink>
+              <NavLink
+                to="/security"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-dark-700 hover:text-white transition-all"
+              >
+                <Shield size={20} />
+                <span className="font-medium">{t('security')}</span>
+              </NavLink>
+              <button
+                onClick={() => {
+                  logout()
+                  setMobileMenuOpen(false)
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-all"
+              >
+                <LogOut size={20} />
+                <span className="font-medium">{t('logout')}</span>
+              </button>
+            </div>
+          </motion.div>
+        </>
+      )}
+
+      {/* Mobile Public Nav (when not logged in) */}
+      {!token && (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-gray-800 z-50">
+          <div className="flex items-center justify-around px-2 py-2">
+            {publicNavItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${
+                    isActive
+                      ? 'text-neon-cyan'
+                      : 'text-gray-400'
+                  }`
+                }
+              >
+                <item.icon size={20} />
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </NavLink>
+            ))}
+            <Link
+              to="/login"
+              className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-neon-cyan"
+            >
+              <LogOut size={20} />
+              <span className="text-[10px] font-medium">Login</span>
+            </Link>
+          </div>
+        </nav>
+      )}
     </div>
   )
 }

@@ -1,25 +1,79 @@
-import { CheckCircle2, XCircle, Activity, Layers, TrendingUp, BarChart3, Volume2 } from 'lucide-react'
+import { CheckCircle2, XCircle, Activity, Target, TrendingUp, BarChart3, Crosshair, MapPin } from 'lucide-react'
 
 interface Setup {
+  id: string
+  symbol: string
+  coin: string
+  entryZone: { low: number; high: number }
+  stopLoss: number
+  targets: number[]
+  riskRewardRatio: number
   confluence: string[]
   analysis: {
     marketStructure: string
     volumeProfile: string
     trendAlignment: string
+    keyLevels: {
+      support: number[]
+      resistance: number[]
+    }
   }
   bias: 'Bullish' | 'Bearish'
   strategies: string[]
+  timeframe: string
+  confidence: number
 }
 
 interface ConfluenceChecklistProps {
   setup: Setup
 }
 
+// Proper price formatting based on magnitude
+const formatPrice = (price: number) => {
+  if (!price || price <= 0) return '0'
+  if (price >= 1000) return price.toLocaleString('en-US', { maximumFractionDigits: 0 })
+  if (price >= 1) return price.toLocaleString('en-US', { maximumFractionDigits: 2 })
+  return price.toLocaleString('en-US', { maximumFractionDigits: 4 })
+}
+
 export default function ConfluenceChecklist({ setup }: ConfluenceChecklistProps) {
+  // Generate entry zone specific analysis
+  const entryMid = (setup.entryZone.low + setup.entryZone.high) / 2
+  const entryWidth = ((setup.entryZone.high - setup.entryZone.low) / entryMid * 100).toFixed(2)
+  const stopDistance = Math.abs(entryMid - setup.stopLoss)
+  const firstTargetDistance = Math.abs(setup.targets[0] - entryMid)
+  
+  // Calculate which key levels are relevant to entry
+  const supportsNearEntry = setup.analysis.keyLevels.support.filter(
+    level => Math.abs(level - entryMid) / entryMid < 0.05
+  )
+  const resistancesNearEntry = setup.analysis.keyLevels.resistance.filter(
+    level => Math.abs(level - entryMid) / entryMid < 0.05
+  )
+  
   const confluenceItems = [
-    { icon: Layers, label: 'Market Structure', desc: setup.analysis.marketStructure },
-    { icon: Volume2, label: 'Volume Profile', desc: setup.analysis.volumeProfile },
-    { icon: TrendingUp, label: 'Trend Alignment', desc: setup.analysis.trendAlignment },
+    { 
+      icon: Target, 
+      label: 'Entry Zone Analysis', 
+      desc: `${setup.coin} at $${formatPrice(entryMid)} | Zone: $${formatPrice(setup.entryZone.low)} - $${formatPrice(setup.entryZone.high)} (${entryWidth}% width)` 
+    },
+    { 
+      icon: MapPin, 
+      label: setup.bias === 'Bullish' ? 'Support Confluence' : 'Resistance Confluence', 
+      desc: supportsNearEntry.length > 0 
+        ? `${setup.bias === 'Bullish' ? 'Demand' : 'Supply'} zone aligns with key level at $${formatPrice(supportsNearEntry[0])}`
+        : `Fresh ${setup.bias === 'Bullish' ? 'demand' : 'supply'} zone, no major ${setup.bias === 'Bullish' ? 'support' : 'resistance'} nearby`
+    },
+    { 
+      icon: Crosshair, 
+      label: 'Stop Loss Placement', 
+      desc: `$${formatPrice(setup.stopLoss)} (${(stopDistance/entryMid*100).toFixed(2)}% from entry) - Below structure for ${setup.bias === 'Bullish' ? 'long' : 'short'} protection` 
+    },
+    { 
+      icon: TrendingUp, 
+      label: 'Target Projection', 
+      desc: `TP1: $${formatPrice(setup.targets[0])} (${(firstTargetDistance/entryMid*100).toFixed(2)}% gain) | R:R ${setup.riskRewardRatio}:1` 
+    },
     ...setup.confluence.map((item) => ({ 
       icon: CheckCircle2, 
       label: item, 

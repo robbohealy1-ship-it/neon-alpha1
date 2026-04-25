@@ -53,7 +53,7 @@ const server = createServer(app);
 const wss = new WebSocketServer({ server });
 app.use(express.json({
   verify: (req: any, res, buf) => {
-    // Store raw body for Stripe webhook verification
+    // Force rebuild 2026-04-25 00:20 - Railway fresh deploy
     if (req.url === '/api/subscription/webhook') {
       req.rawBody = buf;
     }

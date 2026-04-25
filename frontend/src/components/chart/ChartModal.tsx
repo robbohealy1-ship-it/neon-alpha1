@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { X, Target, Activity, BarChart3, ExternalLink } from 'lucide-react'
+import { X, Target, Activity, BarChart3, ExternalLink, Crosshair, TrendingUp } from 'lucide-react'
 import TradingViewChart from '../TradingViewChart'
 import TradePlan from '../analysis/TradePlan'
 import ConfluenceChecklist from '../analysis/ConfluenceChecklist'
@@ -196,24 +196,68 @@ export default function ChartModal({ setup, onClose, locked = false }: ChartModa
           {activeTab === 'analysis' && <ConfluenceChecklist setup={setup} />}
           {activeTab === 'context' && (
             <div className="space-y-3">
-              <div className="glass rounded-lg p-3 border border-gray-700/50">
-                <h3 className="text-xs font-semibold text-gray-400 mb-2">Support Levels</h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {setup.analysis.keyLevels.support.map((level, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded bg-neon-green/10 text-neon-green text-xs font-medium">
-                      ${formatPrice(level)}
+              {/* Entry Zone Context */}
+              <div className="glass rounded-lg p-3 border border-neon-cyan/30">
+                <h3 className="text-xs font-semibold text-neon-cyan mb-2 flex items-center gap-1">
+                  <Target size={12} />
+                  Entry Zone Analysis - {setup.coin}
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-2 bg-dark-700/30 rounded">
+                    <span className="text-xs text-gray-400">Zone Range</span>
+                    <span className="text-xs font-mono text-neon-cyan">
+                      ${formatPrice(setup.entryZone.low)} - ${formatPrice(setup.entryZone.high)}
                     </span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-dark-700/30 rounded">
+                    <span className="text-xs text-gray-400">Mid Point</span>
+                    <span className="text-xs font-mono text-white">
+                      ${formatPrice((setup.entryZone.low + setup.entryZone.high) / 2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-dark-700/30 rounded">
+                    <span className="text-xs text-gray-400">Zone Width</span>
+                    <span className="text-xs font-mono text-gray-300">
+                      {((setup.entryZone.high - setup.entryZone.low) / ((setup.entryZone.low + setup.entryZone.high) / 2) * 100).toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Price approaching this zone signals potential {setup.bias.toLowerCase()} entry opportunity
+                </p>
+              </div>
+
+              {/* Key Levels Near Entry */}
+              <div className="glass rounded-lg p-3 border border-gray-700/50">
+                <h3 className="text-xs font-semibold text-gray-400 mb-2">Key Levels Near Entry</h3>
+                <div className="space-y-2">
+                  {setup.analysis.keyLevels.support.slice(0, 2).map((level, i) => (
+                    <div key={`s-${i}`} className="flex items-center justify-between p-2 bg-neon-green/5 rounded">
+                      <span className="text-xs text-neon-green">Support {i + 1}</span>
+                      <span className="text-xs font-mono text-neon-green">${formatPrice(level)}</span>
+                    </div>
+                  ))}
+                  {setup.analysis.keyLevels.resistance.slice(0, 2).map((level, i) => (
+                    <div key={`r-${i}`} className="flex items-center justify-between p-2 bg-red-400/5 rounded">
+                      <span className="text-xs text-red-400">Resistance {i + 1}</span>
+                      <span className="text-xs font-mono text-red-400">${formatPrice(level)}</span>
+                    </div>
                   ))}
                 </div>
               </div>
+
+              {/* Technical Context */}
               <div className="glass rounded-lg p-3 border border-gray-700/50">
-                <h3 className="text-xs font-semibold text-gray-400 mb-2">Resistance Levels</h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {setup.analysis.keyLevels.resistance.map((level, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded bg-red-400/10 text-red-400 text-xs font-medium">
-                      ${formatPrice(level)}
-                    </span>
-                  ))}
+                <h3 className="text-xs font-semibold text-gray-400 mb-2">Technical Context</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-2 bg-dark-700/30 rounded text-center">
+                    <div className="text-[10px] text-gray-500 uppercase">Structure</div>
+                    <div className="text-xs text-white">{setup.analysis.marketStructure}</div>
+                  </div>
+                  <div className="p-2 bg-dark-700/30 rounded text-center">
+                    <div className="text-[10px] text-gray-500 uppercase">Trend</div>
+                    <div className="text-xs text-white">{setup.analysis.trendAlignment}</div>
+                  </div>
                 </div>
               </div>
             </div>
