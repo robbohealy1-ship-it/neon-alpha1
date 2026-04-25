@@ -6,6 +6,8 @@ import { useState, useEffect, useRef } from 'react'
 import api from '../lib/api'
 import { useTranslation } from 'react-i18next'
 import { Menu, X } from 'lucide-react'
+import MobileLayout from './MobileLayout'
+import { useViewport } from '../hooks/useMobileGestures'
 
 export default function Layout() {
   const { t } = useTranslation()
@@ -14,6 +16,12 @@ export default function Layout() {
   const [showAlerts, setShowAlerts] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
+  const viewport = useViewport()
+  
+  // Use mobile layout for mobile devices
+  if (viewport.isMobile) {
+    return <MobileLayout />
+  }
 
   useEffect(() => {
     // Only load alerts if user is authenticated

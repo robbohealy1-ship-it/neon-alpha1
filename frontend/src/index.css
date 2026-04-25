@@ -194,3 +194,125 @@ html.light .border-gray-600 {
     100% { background-position: 0% 50%; }
   }
 }
+
+/* Mobile Safe Area Support */
+@supports (padding: max(0px)) {
+  .safe-area-inset {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+.h-safe-top {
+  height: env(safe-area-inset-top);
+  min-height: 20px;
+}
+
+/* Mobile Touch Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover\:scale-105:active,
+  .hover\:scale-110:active {
+    transform: scale(0.98);
+  }
+  
+  /* Larger touch targets */
+  button, 
+  a, 
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent text selection on UI elements */
+  nav, header, .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Remove tap highlight */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Pull to Refresh Animation */
+@keyframes pullRefresh {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pull-refresh-spinner {
+  animation: pullRefresh 1s linear infinite;
+}
+
+/* Mobile Bottom Sheet */
+.bottom-sheet {
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 768px) {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+}
+
+/* Standalone PWA Mode */
+@media (display-mode: standalone) {
+  body {
+    /* Prevent bounce effect in standalone mode */
+    overscroll-behavior-y: none;
+  }
+  
+  /* Hide browser UI elements */
+  .browser-only {
+    display: none !important;
+  }
+}
+
+/* iOS Specific Fixes */
+@supports (-webkit-touch-callout: none) {
+  /* iOS only styles */
+  .ios-fixed {
+    position: fixed;
+    /* Prevent iOS rubber banding */
+    overscroll-behavior: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
