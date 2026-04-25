@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { X, Target, Activity, BarChart3, ExternalLink, Crosshair, TrendingUp } from 'lucide-react'
+import { X, Target, Activity, BarChart3, ExternalLink } from 'lucide-react'
 import TradingViewChart from '../TradingViewChart'
 import TradePlan from '../analysis/TradePlan'
 import ConfluenceChecklist from '../analysis/ConfluenceChecklist'

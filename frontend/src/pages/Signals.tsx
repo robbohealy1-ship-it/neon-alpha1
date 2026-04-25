@@ -64,11 +64,9 @@ function SignalsContent() {
   
   // Tier-based state
   const [tier, setTier] = useState('basic')
-  const [limitReached, setLimitReached] = useState(false)
-  const [totalAvailable, setTotalAvailable] = useState(0)
   
   // Access control and subscription status
-  const { canUseTelegram, plan, isFreeTier } = useAccessControl()
+  const { canUseTelegram, plan } = useAccessControl()
   
   // Available strategies (matching signal engine)
   const strategies = [
@@ -209,8 +207,6 @@ function SignalsContent() {
       let data;
       let isPreview = false;
       let responseTier = 'basic';
-      let responseLimitReached = false;
-      let responseTotalAvailable = 0;
 
       if (!token) {
         // Use public preview for non-logged in users
@@ -225,8 +221,6 @@ function SignalsContent() {
           if (response.data.signals) {
             data = response.data.signals;
             responseTier = response.data.tier || 'basic';
-            responseLimitReached = response.data.limitReached || false;
-            responseTotalAvailable = response.data.totalAvailable || data.length;
           } else {
             // Fallback for old format
             data = response.data;
@@ -244,8 +238,6 @@ function SignalsContent() {
       }
 
       setTier(responseTier);
-      setLimitReached(responseLimitReached);
-      setTotalAvailable(responseTotalAvailable);
 
       // Transform backend signals to new format
       const transformedSignals = data.map((s: any) => ({

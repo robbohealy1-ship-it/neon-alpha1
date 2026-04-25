@@ -47,9 +47,6 @@ export default function ConfluenceChecklist({ setup }: ConfluenceChecklistProps)
   const supportsNearEntry = setup.analysis.keyLevels.support.filter(
     level => Math.abs(level - entryMid) / entryMid < 0.05
   )
-  const resistancesNearEntry = setup.analysis.keyLevels.resistance.filter(
-    level => Math.abs(level - entryMid) / entryMid < 0.05
-  )
   
   const confluenceItems = [
     { 
